@@ -182,3 +182,115 @@ float Math::random(float p_from, float p_to) {
 int Math::random(int p_from, int p_to) {
 	return default_rand.random(p_from, p_to);
 }
+
+uint8_t Math::uGCD(uint8_t a, uint8_t b)
+{
+    uint8_t x = MIN(a, b);
+    uint8_t y = MAX(a, b);
+    uint8_t r;
+    do
+    {
+        r = y % x;
+        y = x;
+        x = r;
+    } while (r);
+    return y;
+}
+
+uint16_t Math::uGCD(uint16_t a, uint16_t b)
+{
+    uint16_t x = MIN(a, b);
+    uint16_t y = MAX(a, b);
+    uint16_t r;
+    do
+    {
+        r = y % x;
+        y = x;
+        x = r;
+    } while (r);
+    return y;
+}
+
+uint32_t Math::uGCD(uint32_t a, uint32_t b)
+{
+    uint32_t x = MIN(a, b);
+    uint32_t y = MAX(a, b);
+    uint32_t r;
+    do
+    {
+        r = y % x;
+        y = x;
+        x = r;
+    } while (r);
+    return y;
+}
+
+uint64_t Math::uGCD(uint64_t a, uint64_t b)
+{
+    uint64_t x = MIN(a, b);
+    uint64_t y = MAX(a, b);
+    uint64_t r;
+    do
+    {
+        r = y % x;
+        y = x;
+        x = r;
+    } while (r);
+    return y;
+}
+
+int8_t sGCD(int8_t a, int8_t b)
+{
+    int8_t x = MIN(a, b);
+    int8_t y = MAX(a, b);
+    int8_t r;
+    do
+    {
+        r = y % x;
+        y = x;
+        x = r;
+    } while (r);
+    return y;
+}
+
+int16_t sGCD(int16_t a, int16_t b)
+{
+    int16_t x = MIN(a, b);
+    int16_t y = MAX(a, b);
+    int16_t r;
+    do
+    {
+        r = y % x;
+        y = x;
+        x = r;
+    } while (r);
+    return y;
+}
+
+int32_t sGCD(int32_t a, int32_t b)
+{
+    int32_t x = MIN(a, b);
+    int32_t y = MAX(a, b);
+    int32_t r;
+    do
+    {
+        r = y % x;
+        y = x;
+        x = r;
+    } while (r);
+    return y;
+}
+
+int64_t sGCD(int64_t a, int64_t b)
+{
+    int64_t x = MIN(a, b);
+    int64_t y = MAX(a, b);
+    int64_t r;
+    do
+    {
+        r = y % x;
+        y = x;
+        x = r;
+    } while (r);
+    return y;
+}

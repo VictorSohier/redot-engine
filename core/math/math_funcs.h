@@ -827,4 +827,22 @@ static _ALWAYS_INLINE_ float sigmoid_affine_approx(float p_x, float p_amplitude,
 	return p_amplitude * (0.5f + p_x / (4.0f + fabsf(p_x))) + p_y_translation;
 }
 
+// TODO(Victor Sohier): Figure out how to get this shit to work with MSVC
+#define MSB(value) ((sizeof(value) << 3) - __builtin_clzg(value) - 1)
+#define POPCNT(value) __builtin_popcountg(value)
+
+int8_t sGCD(int8_t a, int8_t b);
+int16_t sGCD(int16_t a, int16_t b);
+int32_t sGCD(int32_t a, int32_t b);
+int64_t sGCD(int64_t a, int64_t b);
+
+uint8_t uGCD(uint8_t a, uint8_t b);
+uint16_t uGCD(uint16_t a, uint16_t b);
+uint32_t uGCD(uint32_t a, uint32_t b);
+uint64_t uGCD(uint64_t a, uint64_t b);
+
+#define ABS(a) (((a) < 0) ? -(a) : (a))
+#define sLCM(a, b) (ABS((a) * (b)) / Math::sGCD((a), (b)))
+#define uLCM(a, b) (ABS((a) * (b)) / Math::uGCD((a), (b)))
+
 }; // namespace Math
