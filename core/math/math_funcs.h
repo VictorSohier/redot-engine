@@ -841,8 +841,20 @@ uint16_t uGCD(uint16_t a, uint16_t b);
 uint32_t uGCD(uint32_t a, uint32_t b);
 uint64_t uGCD(uint64_t a, uint64_t b);
 
-#define ABS(a) (((a) < 0) ? -(a) : (a))
-#define sLCM(a, b) (ABS((a) * (b)) / Math::sGCD((a), (b)))
-#define uLCM(a, b) (ABS((a) * (b)) / Math::uGCD((a), (b)))
+template <typename T>
+constexpr T ABS(T a)
+{
+	return (a < 0) ? -a : a;
+}
+
+int8_t sLCM(int8_t a, int8_t b);
+int16_t sLCM(int16_t a, int16_t b);
+int32_t sLCM(int32_t a, int32_t b);
+int64_t sLCM(int64_t a, int64_t b);
+
+uint8_t uLCM(uint8_t a, uint8_t b);
+uint16_t uLCM(uint16_t a, uint16_t b);
+uint32_t uLCM(uint32_t a, uint32_t b);
+uint64_t uLCM(uint64_t a, uint64_t b);
 
 }; // namespace Math

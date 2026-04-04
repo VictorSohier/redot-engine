@@ -30,6 +30,9 @@
 
 #include <cstddef>
 
+// Pointers to elements in this data structure are stable!
+// Resource management is not automatic. User must call `free` method to
+// release resources.
 struct Xar
 {
 	using Dtor = void (*)(void *);
@@ -40,14 +43,49 @@ struct Xar
 					// unused in page aligned pointers
 					// This assumes pages are 4KB
 	Xar(size_t elSize);
+
+	// returns a pointer to the element at index
+	//
+	// usage:
+	// ```cpp
+	// *((T *)xar->at(i)) = value;
+	// ```
 	void *at(size_t index);
 	const void *at(size_t index) const;
+
+	// returns a pointer to the last element
+	//
+	// usage:
+	// ```cpp
+	// *((T *)xar->last()) = value;
+	// ```
 	void *last();
 	size_t count() const;
 	void swapRemove(size_t index, Dtor dtor);
 	void orderedRemove(size_t index, Dtor dtor);
+
+	// returns a pointer to the new element inserted at index
+	//
+	// usage:
+	// ```cpp
+	// *((T *)xar->insert(i)) = value;
+	// ```
 	void *insert(size_t index);
+
+	// returns a pointer to the new element pushed to the end of the xar
+	//
+	// usage:
+	// ```cpp
+	// *((T *)xar->push()) = value;
+	// ```
 	void *push();
+
+	// returns a pointer to the popped element at the end of the xar
+	//
+	// usage:
+	// ```cpp
+	// T value = *((T *)xar->pop());
+	// ```
 	void *pop();
 	void clear(Dtor dtor);
 	void free(Dtor dtor);

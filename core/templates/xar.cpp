@@ -56,7 +56,10 @@ static void setPtr(Xar *self, size_t ptrIdx, void *ptr)
 
 // right shift by 12 because page sizes are 4KB
 // LCM to avoid an awkward and ugly edge case which also leaves wasted space
-#define getBasePageSize(elSize) uLCM((elSize), (1 << 12))
+constexpr size_t getBasePageSize(size_t elSize)
+{
+	return Math::uLCM((elSize), (1 << 12));
+}
 
 Xar::Xar(size_t elSize) : elSize(elSize), bytes(0) { }
 

@@ -294,3 +294,37 @@ int64_t sGCD(int64_t a, int64_t b)
     } while (r);
     return y;
 }
+
+int8_t sLCM(int8_t a, int8_t b)
+{
+	return Math::ABS(a * b) / Math::sGCD(a, b);
+}
+int16_t sLCM(int16_t a, int16_t b)
+{
+	return Math::ABS(a * b) / Math::sGCD(a, b);
+}
+int32_t sLCM(int32_t a, int32_t b)
+{
+	return Math::ABS(a * b) / Math::sGCD(a, b);
+}
+int64_t sLCM(int64_t a, int64_t b)
+{
+	return Math::ABS(a * b) / Math::sGCD(a, b);
+}
+
+uint8_t uLCM(uint8_t a, uint8_t b)
+{
+	return Math::ABS(a * b) / Math::uGCD(a, b);
+}
+uint16_t uLCM(uint16_t a, uint16_t b)
+{
+	return Math::ABS(a * b) / Math::uGCD(a, b);
+}
+uint32_t uLCM(uint32_t a, uint32_t b)
+{
+	return Math::ABS(a * b) / Math::uGCD(a, b);
+}
+uint64_t uLCM(uint64_t a, uint64_t b)
+{
+	return Math::ABS(a * b) / Math::uGCD(a, b);
+}
