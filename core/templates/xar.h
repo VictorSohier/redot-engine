@@ -36,6 +36,7 @@
 struct Xar
 {
 	using Dtor = void (*)(void *);
+	using Comparer = int (*)(const void *, const void *);
 	size_t elSize;
 	size_t bytes;
 	void *data[36]; // 36 because the top 16 bits are reserved for
@@ -44,7 +45,8 @@ struct Xar
 					// This assumes pages are 4KB
 	Xar(size_t elSize);
 
-	// returns a pointer to the element at index
+	// Returns a pointer to the element at index. Returns null when out of
+	// bounds.
 	//
 	// usage:
 	// ```cpp
@@ -53,7 +55,8 @@ struct Xar
 	void *at(size_t index);
 	const void *at(size_t index) const;
 
-	// returns a pointer to the last element
+	// Returns a pointer to the last element. Returns null when the container
+	// is empty.
 	//
 	// usage:
 	// ```cpp
@@ -64,7 +67,7 @@ struct Xar
 	void swapRemove(size_t index, Dtor dtor);
 	void orderedRemove(size_t index, Dtor dtor);
 
-	// returns a pointer to the new element inserted at index
+	// Returns a pointer to the new element inserted at index.
 	//
 	// usage:
 	// ```cpp
@@ -72,7 +75,7 @@ struct Xar
 	// ```
 	void *insert(size_t index);
 
-	// returns a pointer to the new element pushed to the end of the xar
+	// Returns a pointer to the new element pushed to the end of the xar.
 	//
 	// usage:
 	// ```cpp
@@ -80,13 +83,19 @@ struct Xar
 	// ```
 	void *push();
 
-	// returns a pointer to the popped element at the end of the xar
+	// returns a pointer to the popped element at the end of the xar. This
+	// memory may be reused later. Please copy or move the element out if you
+	// want to use it later!
 	//
 	// usage:
 	// ```cpp
 	// T value = *((T *)xar->pop());
 	// ```
 	void *pop();
+
+	// idx is the destination for the index where the first instance of value
+	// resides. idx is optional. Returns true if the value was found.
+	bool contains(size_t *idx, const void *value, Comparer cmp) const;
 	void clear(Dtor dtor);
 	void free(Dtor dtor);
 private:

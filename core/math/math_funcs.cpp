@@ -239,7 +239,7 @@ uint64_t Math::uGCD(uint64_t a, uint64_t b)
     return y;
 }
 
-int8_t sGCD(int8_t a, int8_t b)
+int8_t Math::sGCD(int8_t a, int8_t b)
 {
     int8_t x = MIN(a, b);
     int8_t y = MAX(a, b);
@@ -253,7 +253,7 @@ int8_t sGCD(int8_t a, int8_t b)
     return y;
 }
 
-int16_t sGCD(int16_t a, int16_t b)
+int16_t Math::sGCD(int16_t a, int16_t b)
 {
     int16_t x = MIN(a, b);
     int16_t y = MAX(a, b);
@@ -267,7 +267,7 @@ int16_t sGCD(int16_t a, int16_t b)
     return y;
 }
 
-int32_t sGCD(int32_t a, int32_t b)
+int32_t Math::sGCD(int32_t a, int32_t b)
 {
     int32_t x = MIN(a, b);
     int32_t y = MAX(a, b);
@@ -281,7 +281,7 @@ int32_t sGCD(int32_t a, int32_t b)
     return y;
 }
 
-int64_t sGCD(int64_t a, int64_t b)
+int64_t Math::sGCD(int64_t a, int64_t b)
 {
     int64_t x = MIN(a, b);
     int64_t y = MAX(a, b);
@@ -295,36 +295,36 @@ int64_t sGCD(int64_t a, int64_t b)
     return y;
 }
 
-int8_t sLCM(int8_t a, int8_t b)
+int8_t Math::sLCM(int8_t a, int8_t b)
 {
 	return Math::ABS(a * b) / Math::sGCD(a, b);
 }
-int16_t sLCM(int16_t a, int16_t b)
+int16_t Math::sLCM(int16_t a, int16_t b)
 {
 	return Math::ABS(a * b) / Math::sGCD(a, b);
 }
-int32_t sLCM(int32_t a, int32_t b)
+int32_t Math::sLCM(int32_t a, int32_t b)
 {
 	return Math::ABS(a * b) / Math::sGCD(a, b);
 }
-int64_t sLCM(int64_t a, int64_t b)
+int64_t Math::sLCM(int64_t a, int64_t b)
 {
 	return Math::ABS(a * b) / Math::sGCD(a, b);
 }
 
-uint8_t uLCM(uint8_t a, uint8_t b)
+uint8_t Math::uLCM(uint8_t a, uint8_t b)
 {
 	return Math::ABS(a * b) / Math::uGCD(a, b);
 }
-uint16_t uLCM(uint16_t a, uint16_t b)
+uint16_t Math::uLCM(uint16_t a, uint16_t b)
 {
 	return Math::ABS(a * b) / Math::uGCD(a, b);
 }
-uint32_t uLCM(uint32_t a, uint32_t b)
+uint32_t Math::uLCM(uint32_t a, uint32_t b)
 {
 	return Math::ABS(a * b) / Math::uGCD(a, b);
 }
-uint64_t uLCM(uint64_t a, uint64_t b)
+uint64_t Math::uLCM(uint64_t a, uint64_t b)
 {
 	return Math::ABS(a * b) / Math::uGCD(a, b);
 }

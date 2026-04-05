@@ -210,3 +210,20 @@ void Xar::free(Dtor dtor)
 		ptr = getPtr(i);
 	}
 }
+
+bool Xar::contains(size_t *idx, const void *value, Comparer cmp) const
+{
+	size_t i = 0;
+	for (; i < count(); i += 1)
+	{
+		if (!cmp(at(i), value))
+		{
+			if (idx)
+			{
+				*idx = i;
+			}
+			return true;
+		}
+	}
+	return false;
+}

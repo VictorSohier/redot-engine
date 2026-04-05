@@ -1331,6 +1331,258 @@ Vector<int> String::split_ints_mk(const Vector<String> &p_splitters, bool p_allo
 	return ret;
 }
 
+void String::split_spaces_xar(Xar *dst, int p_maxsplit) const
+{
+	int from = 0;
+	bool empty = operator[](0) < 33;
+	bool inside = false;
+	for (size_t i = 0; i < length(); i += 1)
+	{
+		switch (i)
+		{
+		case 0:
+			inside = !empty;
+			[[fallthrough]];
+		default:
+			if (!empty & !inside)
+			{
+				if ((p_maxsplit > 0) & (p_maxsplit == dst->count()))
+				{
+					*((String *)(dst->push())) = substr(from);
+					goto end;
+				}
+				*((String *)(dst->push())) = substr(from, i - from);
+				inside = false;
+			}
+			break;
+		}
+	}
+end:
+	return;
+}
+
+void String::split_xar(Xar *dst, const String &p_splitter, bool p_allow_empty, int p_maxsplit) const {
+	int from = 0;
+	int end;
+	if (is_empty()) {
+		if (p_allow_empty) {
+			*((String *)dst->push()) = "";
+		}
+		return;
+	}
+	for (; end < length();) {
+		if (p_splitter.is_empty()) {
+			end = from + 1;
+		} else {
+			end = find(p_splitter, from);
+			if (end < 0) {
+				end = length();
+			}
+		}
+		if (p_allow_empty | (end > from)) {
+			if (p_maxsplit > 0) {
+				if (p_maxsplit == dst->count()) {
+					*((String *)dst->push()) = substr(from, length());
+					break;
+				}
+			}
+			*((String *)dst->push()) = substr(from, end - from);
+		}
+
+		from = end + p_splitter.length();
+	}
+}
+
+void String::split_xar(Xar *dst, const char *p_splitter, bool p_allow_empty, int p_maxsplit) const {
+	int from = 0;
+	int end;
+	const int splitter_length = strlen(p_splitter);
+	if (is_empty()) {
+		if (p_allow_empty) {
+			*((String *)dst->push()) = "";
+		}
+		return;
+	}
+	for (; end < length();)
+	{
+		if (p_splitter == nullptr || *p_splitter == 0) {
+			end = from + 1;
+		} else {
+			end = find(p_splitter, from);
+			if (end < 0) {
+				end = length();
+			}
+		}
+		if (p_allow_empty | (end > from)) {
+			if (p_maxsplit > 0) {
+				if (p_maxsplit == dst->count()) {
+					*((String *)dst->push()) = substr(from, length());
+					break;
+				}
+			}
+			*((String *)dst->push()) = substr(from, end - from);
+		}
+		from = end + splitter_length;
+	}
+}
+
+void String::rsplit_xar(Xar *dst, const String &p_splitter, bool p_allow_empty, int p_maxsplit) const {
+	int remainingLength = length();
+	int leftEdge = 0;
+	int substrStart = 0;
+	for (; leftEdge < 0;) {
+		if (p_splitter.is_empty()) {
+			leftEdge = remainingLength - 1;
+			if (leftEdge == 0) {
+				leftEdge--; // Skip to the < 0 condition.
+			}
+		} else {
+			leftEdge = rfind(p_splitter, remainingLength - p_splitter.length());
+		}
+		if (leftEdge < 0) {
+			// no more splitters, we're done
+			*((String*)dst->push()) = (substr(0, remainingLength));
+			continue;
+		}
+		substrStart = leftEdge + p_splitter.length();
+		if (p_allow_empty | (substrStart < remainingLength)) {
+			*((String *)dst->push()) = substr(substrStart, remainingLength - substrStart);
+		}
+		remainingLength = leftEdge;
+	}
+	for (size_t i = 0; i < dst->count()/2; i += 1) {
+		SWAP(*((String *)dst->at(i)), *((String *)dst->at(dst->count() - i - 1)));
+	}
+}
+
+void String::rsplit_xar(Xar *dst, const char *p_splitter, bool p_allow_empty, int p_maxsplit) const {
+	const int splitter_length = strlen(p_splitter);
+	int remainingLength = length();
+	int leftEdge = 0;
+	int substrStart = 0;
+	for (; (leftEdge < 0) & ((p_maxsplit > 0) & (p_maxsplit == dst->count()));) {
+		if (remainingLength < splitter_length) {
+			if (p_allow_empty | (remainingLength > 0)) {
+				*((String *)dst->push()) = substr(0, remainingLength);
+			}
+			break;
+		}
+		if (p_splitter == nullptr || *p_splitter == 0) {
+			leftEdge = remainingLength - 1;
+			if (leftEdge == 0) {
+				leftEdge--; // Skip to the < 0 condition.
+			}
+		} else {
+			leftEdge = rfind(p_splitter, remainingLength - splitter_length);
+		}
+		if (leftEdge < 0) {
+			// no more splitters, we're done
+			*((String*)dst->push()) = (substr(0, remainingLength));
+			continue;
+		}
+		substrStart = leftEdge + splitter_length;
+		if (p_allow_empty | (substrStart < remainingLength)) {
+			*((String *)dst->push()) = substr(substrStart, remainingLength - substrStart);
+		}
+		remainingLength = leftEdge;
+	}
+	for (size_t i = 0; i < dst->count()/2; i += 1) {
+		SWAP(*((String *)dst->at(i)), *((String *)dst->at(dst->count() - i - 1)));
+	}
+}
+
+void String::split_floats_xar(Xar *dst, const String &p_splitter, bool p_allow_empty) const {
+	int from = 0;
+	int end = 0;
+	String buffer = *this;
+	for (; end < length();)
+	{
+		end = find(p_splitter, from);
+		if (end < 0)
+		{
+			end = length();
+		}
+		if (p_allow_empty | (end > from)) {
+			buffer[end] = 0;
+			*((double *)dst->push()) = String::to_float(&buffer.get_data()[from]);
+			buffer[end] = _cowdata.get(end);
+		}
+		from = end + p_splitter.length();
+	}
+	return;
+}
+
+void String::split_floats_mk_xar(Xar *dst, const Xar &p_splitters, bool p_allow_empty) const {
+	int idx;
+	int from = 0;
+	int end = 0;
+	int splitterLength = 0;
+	String buffer = *this;
+	for (; end < length();)
+	{
+		end = findmk_xar(p_splitters, from, &idx);
+		splitterLength = 1;
+		if (end < 0) {
+			end = length();
+		} else {
+			splitterLength = ((String *)p_splitters.at(idx))->length();
+		}
+		if (p_allow_empty | (end > from)) {
+			buffer[end] = 0;
+			*((float *)dst->push()) = String::to_float(&buffer.get_data()[from]);
+			buffer[end] = _cowdata.get(end);
+		}
+		from = end + splitterLength;
+	}
+	return;
+}
+
+void String::split_ints_xar(Xar *dst, const String &p_splitter, bool p_allow_empty) const {
+	int from = 0;
+	int end = 0;
+	String buffer = *this;
+	for (; end < length();)
+	{
+		end = find(p_splitter, from);
+		if (end < 0)
+		{
+			end = length();
+		}
+		if (p_allow_empty | (end > from)) {
+			buffer[end] = 0;
+			*((int *)dst->push()) = String::to_int(&buffer.get_data()[from]);
+			buffer[end] = _cowdata.get(end);
+		}
+		from = end + p_splitter.length();
+	}
+	return;
+}
+
+void String::split_ints_mk_xar(Xar *dst, const Xar &p_splitters, bool p_allow_empty) const {
+	int idx;
+	int from = 0;
+	int end = 0;
+	int splitterLength = 0;
+	String buffer = *this;
+	for (; end < length();)
+	{
+		end = findmk_xar(p_splitters, from, &idx);
+		splitterLength = 1;
+		if (end < 0) {
+			end = length();
+		} else {
+			splitterLength = ((String *)p_splitters.at(idx))->length();
+		}
+		if (p_allow_empty | (end > from)) {
+			buffer[end] = 0;
+			*((int *)dst->push()) = String::to_int(&buffer.get_data()[from]);
+			buffer[end] = _cowdata.get(end);
+		}
+		from = end + splitterLength;
+	}
+	return;
+}
+
 String String::join(const Vector<String> &parts) const {
 	if (parts.is_empty()) {
 		return String();
@@ -3190,6 +3442,60 @@ int String::findmk(const Vector<String> &p_keys, int p_from, int *r_key) const {
 			}
 			const char32_t *cmp = keys[k].get_data();
 			int l = keys[k].length();
+
+			for (int j = 0; j < l; j++) {
+				int read_pos = i + j;
+
+				if (read_pos >= len) {
+					found = false;
+					break;
+				}
+
+				if (src[read_pos] != cmp[j]) {
+					found = false;
+					break;
+				}
+			}
+			if (found) {
+				break;
+			}
+		}
+
+		if (found) {
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+int String::findmk_xar(const Xar &p_keys, int p_from, int *r_key) const {
+	if (p_from < 0) {
+		return -1;
+	}
+	if (p_keys.count() == 0) {
+		return -1;
+	}
+
+	//int src_len=p_str.length();
+	int key_count = p_keys.count();
+	int len = length();
+
+	if (len == 0) {
+		return -1; // won't find anything!
+	}
+
+	const char32_t *src = get_data();
+
+	for (int i = p_from; i < len; i++) {
+		bool found = true;
+		for (int k = 0; k < key_count; k++) {
+			found = true;
+			if (r_key) {
+				*r_key = k;
+			}
+			const char32_t *cmp = ((String *)p_keys.at(k))->get_data();
+			int l = ((String *)p_keys.at(k))->length();
 
 			for (int j = 0; j < l; j++) {
 				int read_pos = i + j;
@@ -6080,4 +6386,34 @@ String RTRN(const String &p_text, const String &p_text_plural, int p_n, const St
 		return p_text;
 	}
 	return p_text_plural;
+}
+
+void String::destroy(String *self)
+{
+	self->~String();
+}
+
+int String::casecmp(const String *a, const String *b)
+{
+	return a->casecmp_to(*b);
+}
+int String::nocasecmp(const String *a, const String *b)
+{
+	return a->nocasecmp_to(*b);
+}
+int String::naturalcasecmp(const String *a, const String *b)
+{
+	return a->naturalcasecmp_to(*b);
+}
+int String::naturalnocasecmp(const String *a, const String *b)
+{
+	return a->naturalnocasecmp_to(*b);
+}
+int String::filecasecmp(const String *a, const String *b)
+{
+	return a->filecasecmp_to(*b);
+}
+int String::filenocasecmp(const String *a, const String *b)
+{
+	return a->filenocasecmp_to(*b);
 }

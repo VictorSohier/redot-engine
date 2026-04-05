@@ -37,6 +37,7 @@
 #include "core/string/char_utils.h" // IWYU pragma: export
 #include "core/templates/cowdata.h"
 #include "core/templates/vector.h"
+#include "core/templates/xar.h"
 #include "core/typedefs.h"
 #include "core/variant/array.h"
 
@@ -384,6 +385,13 @@ public:
 	signed char filecasecmp_to(const String &p_str) const;
 	signed char filenocasecmp_to(const String &p_str) const;
 
+	static int casecmp(const String *a, const String *b);
+	static int nocasecmp(const String *a, const String *b);
+	static int naturalcasecmp(const String *a, const String *b);
+	static int naturalnocasecmp(const String *a, const String *b);
+	static int filecasecmp(const String *a, const String *b);
+	static int filenocasecmp(const String *a, const String *b);
+
 	bool is_valid_string() const;
 
 	/* debug, error messages */
@@ -402,6 +410,7 @@ public:
 	int rfindn(const String &p_str, int p_from = -1) const; ///< return <0 if failed, case insensitive
 	int rfindn(const char *p_str, int p_from = -1) const; ///< return <0 if failed
 	int findmk(const Vector<String> &p_keys, int p_from = 0, int *r_key = nullptr) const; ///< return <0 if failed
+	int findmk_xar(const Xar &p_keys, int p_from = 0, int *r_key = nullptr) const; ///< return <0 if failed
 	bool match(const String &p_wildcard) const;
 	bool matchn(const String &p_wildcard) const;
 	bool begins_with(const String &p_string) const;
@@ -497,6 +506,26 @@ public:
 	Vector<float> split_floats_mk(const Vector<String> &p_splitters, bool p_allow_empty = true) const;
 	Vector<int> split_ints(const String &p_splitter, bool p_allow_empty = true) const;
 	Vector<int> split_ints_mk(const Vector<String> &p_splitters, bool p_allow_empty = true) const;
+
+	// these functions expect the Xar to be initialized. The elSize should be
+	// sizeof(String)
+	void split_xar(Xar *dst, const String &p_splitter = "", bool p_allow_empty = true, int p_maxsplit = 0) const;
+	void split_xar(Xar *dst, const char *p_splitter = "", bool p_allow_empty = true, int p_maxsplit = 0) const;
+	void rsplit_xar(Xar *dst, const String &p_splitter = "", bool p_allow_empty = true, int p_maxsplit = 0) const;
+	void rsplit_xar(Xar *dst, const char *p_splitter = "", bool p_allow_empty = true, int p_maxsplit = 0) const;
+	void split_spaces_xar(Xar *dst, int p_maxsplit = 0) const;
+	// these functions expect the Xar to be initialized. The elSize should be
+	// sizeof(double)
+	void split_floats_xar(Xar *dst, const String &p_splitter, bool p_allow_empty = true) const;
+	// these functions expect the Xar to be initialized. The elSize should be
+	// sizeof(float) for the first Xar and the second Xar should contain Strings
+	void split_floats_mk_xar(Xar *dst, const Xar &p_splitters, bool p_allow_empty = true) const;
+	// these functions expect the Xar to be initialized. The elSize should be
+	// sizeof(int)
+	void split_ints_xar(Xar *dst, const String &p_splitter, bool p_allow_empty = true) const;
+	// these functions expect the Xar to be initialized. The elSize should be
+	// sizeof(int) for the first Xar and the second Xar should contain Strings
+	void split_ints_mk_xar(Xar *dst, const Xar &p_splitters, bool p_allow_empty = true) const;
 
 	String join(const Vector<String> &parts) const;
 
@@ -680,6 +709,7 @@ public:
 		clear();
 		append_utf32(p_cstr);
 	}
+	static void destroy(String *self);
 };
 
 // Zero-constructing String initializes _cowdata.ptr() to nullptr and thus empty.
