@@ -30,6 +30,8 @@
 
 #include <cstddef>
 
+#pragma once
+
 // Pointers to elements in this data structure are stable!
 // Resource management is not automatic. User must call `free` method to
 // release resources.
