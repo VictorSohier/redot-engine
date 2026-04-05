@@ -5,8 +5,10 @@
 /*                             REDOT ENGINE                               */
 /*                        https://redotengine.org                         */
 /**************************************************************************/
-/* Copyright (c) 2026-present Redot Engine contributors                   */
+/* Copyright (c) 2024-present Redot Engine contributors                   */
 /*                                          (see REDOT_AUTHORS.md)        */
+/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */
+/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */
 /*                                                                        */
 /* Permission is hereby granted, free of charge, to any person obtaining  */
 /* a copy of this software and associated documentation files (the        */
@@ -28,15 +30,14 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include <cstddef>
-
 #pragma once
+
+#include <cstddef>
 
 // Pointers to elements in this data structure are stable!
 // Resource management is not automatic. User must call `free` method to
 // release resources.
-struct Xar
-{
+struct Xar {
 	using Dtor = void (*)(void *);
 	using Comparer = int (*)(const void *, const void *);
 	size_t elSize;
@@ -66,6 +67,7 @@ struct Xar
 	// ```
 	void *last();
 	size_t count() const;
+	size_t cap() const;
 	void swapRemove(size_t index, Dtor dtor);
 	void orderedRemove(size_t index, Dtor dtor);
 
@@ -100,6 +102,7 @@ struct Xar
 	bool contains(size_t *idx, const void *value, Comparer cmp) const;
 	void clear(Dtor dtor);
 	void free(Dtor dtor);
+
 private:
 	void *getPtr(size_t idx) const;
 };
