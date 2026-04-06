@@ -121,14 +121,20 @@ size_t Xar::cap() const {
 }
 
 void Xar::swapRemove(size_t index, Dtor dtor) {
-	dtor(at(index));
+	if (dtor)
+	{
+		dtor(at(index));
+	}
 	memcpy(at(index), at((bytes / elSize) - 1), elSize);
 	bytes -= elSize;
 }
 
 void Xar::orderedRemove(size_t index, Dtor dtor) {
 	size_t elCount = count();
-	dtor(at(index));
+	if (dtor)
+	{
+		dtor(at(index));
+	}
 	for (size_t i = index; i < elCount - 1; i += 1) {
 		memcpy(at(i), at(i + 1), elSize);
 	}
