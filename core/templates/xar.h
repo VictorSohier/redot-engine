@@ -32,6 +32,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include <cstddef>
 
 // Pointers to elements in this data structure are stable!
@@ -40,6 +41,7 @@
 struct Xar {
 	using Dtor = void (*)(void *);
 	using Comparer = int (*)(const void *, const void *);
+	using Swap = void (*)(void *, void *);
 	size_t elSize;
 	size_t bytes;
 	void *data[36]; // 36 because the top 16 bits are reserved for
@@ -100,9 +102,33 @@ struct Xar {
 	// idx is the destination for the index where the first instance of value
 	// resides. idx is optional. Returns true if the value was found.
 	bool contains(size_t *idx, const void *value, Comparer cmp) const;
+
+	// Warning: This resize does not destroy extraneous elements!
+	void resize(size_t elemCount);
+	void sort(Comparer cmp, Swap swap);
 	void clear(Dtor dtor);
 	void free(Dtor dtor);
 
 private:
 	void *getPtr(size_t idx) const;
 };
+
+template <typename T>
+void swap(T *a, T *b)
+{
+	T tmp = std::move(*a);
+	*a = std::move(*b);
+	*b = std::move(tmp);
+}
+
+template <typename T>
+int compare(const T *a, const T *b)
+{
+	return ((*a) < (*b)) ? -1 : (((*a) == (*b)) ? 0 : 1);
+}
+
+template <typename T>
+void destroy(T *self)
+{
+	self->~T();
+}

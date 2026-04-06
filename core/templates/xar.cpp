@@ -60,7 +60,13 @@ constexpr size_t getBasePageSize(size_t elSize) {
 }
 
 Xar::Xar(size_t elSize) :
-		elSize(elSize), bytes(0) {}
+		elSize(elSize), bytes(0)
+{
+	for (size_t i = 0; i < 36; i += 1)
+	{
+		data[i] = nullptr;
+	}
+}
 
 void *Xar::at(size_t index) {
 	void *ret = nullptr;
@@ -180,8 +186,10 @@ void *Xar::pop() {
 }
 
 void Xar::clear(Dtor dtor) {
-	for (size_t i = 0; i < count(); i += 1) {
-		dtor(at(i));
+	if (dtor) {
+		for (size_t i = 0; i < count(); i += 1) {
+			dtor(at(i));
+		}
 	}
 	bytes = 0;
 }
@@ -189,8 +197,10 @@ void Xar::clear(Dtor dtor) {
 void Xar::free(Dtor dtor) {
 	size_t i = 0;
 	void *ptr = getPtr(i);
-	for (; i < count(); i += 1) {
-		dtor(at(i));
+	if (dtor) {
+		for (; i < count(); i += 1) {
+			dtor(at(i));
+		}
 	}
 	i = 0;
 	for (; ptr != nullptr;) {
@@ -211,4 +221,80 @@ bool Xar::contains(size_t *idx, const void *value, Comparer cmp) const {
 		}
 	}
 	return false;
+}
+
+void Xar::resize(size_t elemCount)
+{
+	size_t basePageSize = getBasePageSize(elSize);
+	size_t byteIdx = elemCount * elSize;
+	size_t pageIdx = byteIdx / basePageSize;
+	size_t chunkIdx = MSB(pageIdx);
+	void *ptr;
+	if (!getPtr(chunkIdx)) {
+		for (size_t i = 0; i <= chunkIdx; i += 1) {
+			ptr = getPtr(i);
+			if (!ptr) {
+				ptr = malloc(basePageSize << chunkIdx);
+				memset(ptr, 0, basePageSize << chunkIdx);
+				setPtr(this, i, ptr);
+			}
+		}
+	}
+	bytes = elemCount * elSize;
+}
+
+// [begin..end)
+struct SortFrame
+{
+	size_t begin; // [
+	size_t end; // )
+};
+
+// iterative quick sort
+void Xar::sort(Comparer cmp, Swap swap)
+{
+	Xar stack = Xar(sizeof(SortFrame));
+	size_t pivot;
+	size_t i;
+	SortFrame frame = {};
+	*((SortFrame *)stack.push()) = { .begin = 0, .end = count(), };
+	while (stack.last())
+	{
+		frame = *((SortFrame *)stack.pop());
+		switch (frame.end - frame.begin)
+		{
+		case 2:
+			if (cmp(at(frame.end - 1), at(frame.begin)) < 0) {
+				swap(at(frame.begin), at(frame.end - 1));
+			}
+			[[fallthrough]];
+		case 1:
+		case 0:
+			break;
+		default:
+			i = frame.begin;
+			pivot = (frame.begin / 2) + (frame.end / 2);
+			swap(at(pivot), at(frame.end - 1));
+			pivot = frame.end - 1;
+			for (size_t j = frame.begin; j < pivot; j += 1)
+			{
+				if (cmp(at(j), at(pivot)) < 0)
+				{
+					swap(at(i), at(j));
+					i += 1;
+				}
+			}
+			swap(at(i), at(pivot));
+			*((SortFrame *)stack.push()) = {
+				.begin = frame.begin,
+				.end = i,
+			};
+			*((SortFrame *)stack.push()) = {
+				.begin = i + 1,
+				.end = frame.end,
+			};
+			break;
+		}
+	}
+	stack.free(nullptr);
 }
