@@ -4512,25 +4512,12 @@ String String::humanize_size(uint64_t p_size) {
 		return String::num_uint64(p_size) + " " + RTR("B");
 	} else {
 		String suffix;
-		switch (magnitude) {
-			case 1:
-				suffix = RTR("KiB");
-				break;
-			case 2:
-				suffix = RTR("MiB");
-				break;
-			case 3:
-				suffix = RTR("GiB");
-				break;
-			case 4:
-				suffix = RTR("TiB");
-				break;
-			case 5:
-				suffix = RTR("PiB");
-				break;
-			case 6:
-				suffix = RTR("EiB");
-				break;
+		constexpr const char *suffixes[6] = {
+			"KiB", "MiB", "GiB", "TiB", "PiB", "EiB",
+		};
+		if ((magnitude > 0) & (magnitude < 7))
+		{
+			suffix = suffixes[magnitude - 1];
 		}
 
 		const double divisor = _div;

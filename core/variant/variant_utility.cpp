@@ -379,21 +379,22 @@ int VariantUtilityFunctions::step_decimals(float step) {
 }
 
 Variant VariantUtilityFunctions::snapped(Callable::CallError &r_error, const Variant &x, const Variant &step) {
-	switch (x.get_type()) {
-		case Variant::INT:
-		case Variant::FLOAT:
-		case Variant::VECTOR2:
-		case Variant::VECTOR2I:
-		case Variant::VECTOR3:
-		case Variant::VECTOR3I:
-		case Variant::VECTOR4:
-		case Variant::VECTOR4I:
-			break;
-		default:
-			r_error.error = Callable::CallError::CALL_ERROR_INVALID_ARGUMENT;
-			r_error.argument = 0;
-			r_error.expected = Variant::NIL;
-			return R"(Argument "x" must be "int", "float", "Vector2", "Vector2i", "Vector3", "Vector3i", "Vector4", or "Vector4i".)";
+	constexpr uint64_t allowed =
+		(Variant::INT) |
+		(Variant::FLOAT) |
+		(Variant::VECTOR2) |
+		(Variant::VECTOR2I) |
+		(Variant::VECTOR3) |
+		(Variant::VECTOR3I) |
+		(Variant::VECTOR4) |
+		(Variant::VECTOR4I) |
+		0;
+	if (!(allowed & (1 << x.get_type())))
+	{
+		r_error.error = Callable::CallError::CALL_ERROR_INVALID_ARGUMENT;
+		r_error.argument = 0;
+		r_error.expected = Variant::NIL;
+		return R"(Argument "x" must be "int", "float", "Vector2", "Vector2i", "Vector3", "Vector3i", "Vector4", or "Vector4i".)";
 	}
 
 	if (x.get_type() != step.get_type()) {
@@ -453,23 +454,24 @@ int64_t VariantUtilityFunctions::snappedi(double x, int64_t step) {
 }
 
 Variant VariantUtilityFunctions::lerp(Callable::CallError &r_error, const Variant &from, const Variant &to, double weight) {
-	switch (from.get_type()) {
-		case Variant::INT:
-		case Variant::FLOAT:
-		case Variant::VECTOR2:
-		case Variant::VECTOR3:
-		case Variant::VECTOR4:
-		case Variant::QUATERNION:
-		case Variant::BASIS:
-		case Variant::COLOR:
-		case Variant::TRANSFORM2D:
-		case Variant::TRANSFORM3D:
-			break;
-		default:
-			r_error.error = Callable::CallError::CALL_ERROR_INVALID_ARGUMENT;
-			r_error.argument = 0;
-			r_error.expected = Variant::NIL;
-			return R"(Argument "from" must be "int", "float", "Vector2", "Vector3", "Vector4", "Color", "Quaternion", "Basis", "Transform2D", or "Transform3D".)";
+	constexpr uint64_t allowed =
+		(1 << Variant::INT) |
+		(1 << Variant::FLOAT) |
+		(1 << Variant::VECTOR2) |
+		(1 << Variant::VECTOR3) |
+		(1 << Variant::VECTOR4) |
+		(1 << Variant::QUATERNION) |
+		(1 << Variant::BASIS) |
+		(1 << Variant::COLOR) |
+		(1 << Variant::TRANSFORM2D) |
+		(1 << Variant::TRANSFORM3D) |
+		0;
+	if (!(allowed & (1 << from.get_type())))
+	{
+		r_error.error = Callable::CallError::CALL_ERROR_INVALID_ARGUMENT;
+		r_error.argument = 0;
+		r_error.expected = Variant::NIL;
+		return R"(Argument "from" must be "int", "float", "Vector2", "Vector3", "Vector4", "Color", "Quaternion", "Basis", "Transform2D", or "Transform3D".)";
 	}
 
 	if (from.get_type() != to.get_type()) {

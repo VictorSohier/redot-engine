@@ -145,27 +145,20 @@ void AccessibilityDriverAccessKit::_accessibility_action_callback(struct accessk
 						rq_data = p_request->data.value.numeric_value;
 					} break;
 					case ACCESSKIT_ACTION_DATA_SCROLL_HINT: {
-						switch (p_request->data.value.scroll_hint) {
-							case ACCESSKIT_SCROLL_HINT_TOP_LEFT: {
-								rq_data = DisplayServer::SCROLL_HINT_TOP_LEFT;
-							} break;
-							case ACCESSKIT_SCROLL_HINT_BOTTOM_RIGHT: {
-								rq_data = DisplayServer::SCROLL_HINT_BOTTOM_RIGHT;
-							} break;
-							case ACCESSKIT_SCROLL_HINT_TOP_EDGE: {
-								rq_data = DisplayServer::SCROLL_HINT_TOP_EDGE;
-							} break;
-							case ACCESSKIT_SCROLL_HINT_BOTTOM_EDGE: {
-								rq_data = DisplayServer::SCROLL_HINT_BOTTOM_EDGE;
-							} break;
-							case ACCESSKIT_SCROLL_HINT_LEFT_EDGE: {
-								rq_data = DisplayServer::SCROLL_HINT_LEFT_EDGE;
-							} break;
-							case ACCESSKIT_SCROLL_HINT_RIGHT_EDGE: {
-								rq_data = DisplayServer::SCROLL_HINT_RIGHT_EDGE;
-							} break;
-							default:
-								break;
+						constexpr DisplayServer::AccessibilityScrollHint ACCESSKIT_SCROLL_HINT_TO_SCROLL_HINT[ACCESSKIT_SCROLL_HINT_RIGHT_EDGE + 1] = {
+							DisplayServer::SCROLL_HINT_TOP_LEFT,
+							DisplayServer::SCROLL_HINT_BOTTOM_RIGHT,
+							DisplayServer::SCROLL_HINT_TOP_EDGE,
+							DisplayServer::SCROLL_HINT_BOTTOM_EDGE,
+							DisplayServer::SCROLL_HINT_LEFT_EDGE,
+							DisplayServer::SCROLL_HINT_RIGHT_EDGE,
+						};
+						if (
+							(p_request->data.value.scroll_hint >= ACCESSKIT_SCROLL_HINT_TOP_LEFT) &
+							(p_request->data.value.scroll_hint <= ACCESSKIT_SCROLL_HINT_RIGHT_EDGE)
+						)
+						{
+							rq_data = ACCESSKIT_SCROLL_HINT_TO_SCROLL_HINT[p_request->data.value.scroll_hint];
 						}
 					} break;
 					case ACCESSKIT_ACTION_DATA_SCROLL_UNIT: {
@@ -929,17 +922,17 @@ void AccessibilityDriverAccessKit::accessibility_update_set_live(const RID &p_id
 	AccessibilityElement *ae = rid_owner.get_or_null(p_id);
 	ERR_FAIL_NULL(ae);
 	_ensure_node(p_id, ae);
-
-	switch (p_live) {
-		case DisplayServer::AccessibilityLiveMode::LIVE_OFF: {
-			accesskit_node_set_live(ae->node, ACCESSKIT_LIVE_OFF);
-		} break;
-		case DisplayServer::AccessibilityLiveMode::LIVE_POLITE: {
-			accesskit_node_set_live(ae->node, ACCESSKIT_LIVE_POLITE);
-		} break;
-		case DisplayServer::AccessibilityLiveMode::LIVE_ASSERTIVE: {
-			accesskit_node_set_live(ae->node, ACCESSKIT_LIVE_ASSERTIVE);
-		} break;
+	constexpr accesskit_live DSALM_TO_AK_LIVE[DisplayServer::AccessibilityLiveMode::LIVE_ASSERTIVE + 1] = {
+		ACCESSKIT_LIVE_OFF,
+		ACCESSKIT_LIVE_POLITE,
+		ACCESSKIT_LIVE_ASSERTIVE
+	};
+	if (
+		(p_live >= DisplayServer::AccessibilityLiveMode::LIVE_OFF) &
+		(p_live <= DisplayServer::AccessibilityLiveMode::LIVE_ASSERTIVE)
+	)
+	{
+		accesskit_node_set_live(ae->node, DSALM_TO_AK_LIVE[p_live]);
 	}
 }
 
@@ -1091,19 +1084,18 @@ void AccessibilityDriverAccessKit::accessibility_update_set_popup_type(const RID
 	ERR_FAIL_NULL(ae);
 	_ensure_node(p_id, ae);
 
-	switch (p_popup) {
-		case DisplayServer::AccessibilityPopupType::POPUP_MENU: {
-			accesskit_node_set_has_popup(ae->node, ACCESSKIT_HAS_POPUP_MENU);
-		} break;
-		case DisplayServer::AccessibilityPopupType::POPUP_LIST: {
-			accesskit_node_set_has_popup(ae->node, ACCESSKIT_HAS_POPUP_LISTBOX);
-		} break;
-		case DisplayServer::AccessibilityPopupType::POPUP_TREE: {
-			accesskit_node_set_has_popup(ae->node, ACCESSKIT_HAS_POPUP_TREE);
-		} break;
-		case DisplayServer::AccessibilityPopupType::POPUP_DIALOG: {
-			accesskit_node_set_has_popup(ae->node, ACCESSKIT_HAS_POPUP_DIALOG);
-		} break;
+	constexpr accesskit_has_popup DSAPT_TO_AK_HAS_POPUP[DisplayServer::AccessibilityPopupType::POPUP_DIALOG + 1] = {
+		ACCESSKIT_HAS_POPUP_MENU,
+		ACCESSKIT_HAS_POPUP_LISTBOX,
+		ACCESSKIT_HAS_POPUP_TREE,
+		ACCESSKIT_HAS_POPUP_DIALOG,
+	};
+	if (
+		(p_popup >= DisplayServer::AccessibilityPopupType::POPUP_MENU) &
+		(p_popup <= DisplayServer::AccessibilityPopupType::POPUP_DIALOG)
+	)
+	{
+		accesskit_node_set_has_popup(ae->node, DSAPT_TO_AK_HAS_POPUP[p_popup]);
 	}
 }
 
@@ -1234,20 +1226,16 @@ void AccessibilityDriverAccessKit::accessibility_update_set_text_align(const RID
 	AccessibilityElement *ae = rid_owner.get_or_null(p_id);
 	ERR_FAIL_NULL(ae);
 	_ensure_node(p_id, ae);
+	constexpr accesskit_text_align TEXT_ALIGN[HORIZONTAL_ALIGNMENT_FILL + 1] = {
+		ACCESSKIT_TEXT_ALIGN_LEFT,
+		ACCESSKIT_TEXT_ALIGN_RIGHT,
+		ACCESSKIT_TEXT_ALIGN_CENTER,
+		ACCESSKIT_TEXT_ALIGN_JUSTIFY,
+	};
 
-	switch (p_align) {
-		case HORIZONTAL_ALIGNMENT_LEFT: {
-			accesskit_node_set_text_align(ae->node, ACCESSKIT_TEXT_ALIGN_LEFT);
-		} break;
-		case HORIZONTAL_ALIGNMENT_CENTER: {
-			accesskit_node_set_text_align(ae->node, ACCESSKIT_TEXT_ALIGN_RIGHT);
-		} break;
-		case HORIZONTAL_ALIGNMENT_RIGHT: {
-			accesskit_node_set_text_align(ae->node, ACCESSKIT_TEXT_ALIGN_CENTER);
-		} break;
-		case HORIZONTAL_ALIGNMENT_FILL: {
-			accesskit_node_set_text_align(ae->node, ACCESSKIT_TEXT_ALIGN_JUSTIFY);
-		} break;
+	if ((p_align >= HORIZONTAL_ALIGNMENT_LEFT) & (p_align <= HORIZONTAL_ALIGNMENT_FILL))
+	{
+		accesskit_node_set_text_align(ae->node, TEXT_ALIGN[p_align]);
 	}
 }
 

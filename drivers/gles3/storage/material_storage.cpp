@@ -512,44 +512,44 @@ _FORCE_INLINE_ static void _fill_std140_ubo_empty(ShaderLanguage::DataType type,
 	if (p_array_size <= 0) {
 		p_array_size = 1;
 	}
-
-	switch (type) {
-		case ShaderLanguage::TYPE_BOOL:
-		case ShaderLanguage::TYPE_INT:
-		case ShaderLanguage::TYPE_UINT:
-		case ShaderLanguage::TYPE_FLOAT: {
-			memset(data, 0, 4 * p_array_size);
-		} break;
-		case ShaderLanguage::TYPE_BVEC2:
-		case ShaderLanguage::TYPE_IVEC2:
-		case ShaderLanguage::TYPE_UVEC2:
-		case ShaderLanguage::TYPE_VEC2: {
-			memset(data, 0, 8 * p_array_size);
-		} break;
-		case ShaderLanguage::TYPE_BVEC3:
-		case ShaderLanguage::TYPE_IVEC3:
-		case ShaderLanguage::TYPE_UVEC3:
-		case ShaderLanguage::TYPE_VEC3: {
-			memset(data, 0, 12 * p_array_size);
-		} break;
-		case ShaderLanguage::TYPE_BVEC4:
-		case ShaderLanguage::TYPE_IVEC4:
-		case ShaderLanguage::TYPE_UVEC4:
-		case ShaderLanguage::TYPE_VEC4: {
-			memset(data, 0, 16 * p_array_size);
-		} break;
-		case ShaderLanguage::TYPE_MAT2: {
-			memset(data, 0, 32 * p_array_size);
-		} break;
-		case ShaderLanguage::TYPE_MAT3: {
-			memset(data, 0, 48 * p_array_size);
-		} break;
-		case ShaderLanguage::TYPE_MAT4: {
-			memset(data, 0, 64 * p_array_size);
-		} break;
-
-		default: {
-		}
+	constexpr size_t SIZE_CONSTANT[ShaderLanguage::TYPE_SAMPLER2D] = {
+		0, // TYPE_VOID
+		4, // TYPE_BOOL
+		8, // TYPE_BVEC2
+		12, // TYPE_BVEC3
+		16, // TYPE_BVEC4
+		4, // TYPE_INT
+		8, // TYPE_IVEC2
+		12, // TYPE_IVEC3
+		16, // TYPE_IVEC4
+		4, // TYPE_UINT
+		8, // TYPE_UVEC2
+		12, // TYPE_UVEC3
+		16, // TYPE_UVEC4
+		4, // TYPE_FLOAT
+		8, // TYPE_VEC2
+		12, // TYPE_VEC3
+		16, // TYPE_VEC4
+		32, // TYPE_MAT2
+		48, // TYPE_MAT3
+		64, // TYPE_MAT4
+		// 0, // TYPE_SAMPLER2D
+		// 0, // TYPE_ISAMPLER2D
+		// 0, // TYPE_USAMPLER2D
+		// 0, // TYPE_SAMPLER2DARRAY
+		// 0, // TYPE_ISAMPLER2DARRAY
+		// 0, // TYPE_USAMPLER2DARRAY
+		// 0, // TYPE_SAMPLER3D
+		// 0, // TYPE_ISAMPLER3D
+		// 0, // TYPE_USAMPLER3D
+		// 0, // TYPE_SAMPLERCUBE
+		// 0, // TYPE_SAMPLERCUBEARRAY
+		// 0, // TYPE_SAMPLEREXT
+		// 0, // TYPE_STRUCT
+	};
+	if ((type > ShaderLanguage::TYPE_VOID) & ((type < ShaderLanguage::TYPE_SAMPLER2D)))
+	{
+		memset(data, 0, SIZE_CONSTANT[type] * p_array_size);
 	}
 }
 

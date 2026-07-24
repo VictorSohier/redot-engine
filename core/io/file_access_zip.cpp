@@ -79,18 +79,12 @@ static long godot_tell(voidpf opaque, voidpf stream) {
 static long godot_seek(voidpf opaque, voidpf stream, uLong offset, int origin) {
 	ZipData *zd = (ZipData *)stream;
 
-	uint64_t pos = offset;
-	switch (origin) {
-		case ZLIB_FILEFUNC_SEEK_CUR:
-			pos = zd->f->get_position() + offset;
-			break;
-		case ZLIB_FILEFUNC_SEEK_END:
-			pos = zd->f->get_length() + offset;
-			break;
-		default:
-			break;
-	}
-
+	uint64_t base[ZLIB_FILEFUNC_SEEK_END + 1] = {
+		0,
+		zd->f->get_position(),
+		zd->f->get_length()
+	};
+	uint64_t pos = base[origin] + offset;
 	zd->f->seek(pos);
 	return 0;
 }

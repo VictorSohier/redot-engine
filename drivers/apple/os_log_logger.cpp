@@ -79,21 +79,16 @@ void OsLogLogger::logv(const char *p_format, va_list p_list, bool p_err) {
 }
 
 void OsLogLogger::log_error(const char *p_function, const char *p_file, int p_line, const char *p_code, const char *p_rationale, bool p_editor_notify, ErrorType p_type, const Vector<Ref<ScriptBacktrace>> &p_script_backtraces) {
-	os_log_t selected_log;
-	switch (p_type) {
-		case ERR_WARNING:
-			selected_log = warning_log;
-			break;
-		case ERR_SCRIPT:
-			selected_log = script_log;
-			break;
-		case ERR_SHADER:
-			selected_log = shader_log;
-			break;
-		case ERR_ERROR:
-		default:
-			selected_log = error_log;
-			break;
+	constexpr os_log_t LOGTYPE_TO_OSLOG0[ERR_SHADER + 1] = {
+		warning_log,
+		script_log,
+		shader_log,
+		error_log
+	};
+	os_log_t selected_log = error_log;
+	if ((p_type >= ERR_ERROR) & (p_type <= ERR_SHADER))
+	{
+		selected_log = LOGTYPE_TO_OSLOG0[p_type];
 	}
 	const char *err_details;
 	if (p_rationale && *p_rationale) {
@@ -103,17 +98,10 @@ void OsLogLogger::log_error(const char *p_function, const char *p_file, int p_li
 	}
 
 	// Choose log level based on error type.
-	os_log_type_t log_type;
-	switch (p_type) {
-		case ERR_WARNING:
-			log_type = OS_LOG_TYPE_DEFAULT;
-			break;
-		case ERR_ERROR:
-		case ERR_SCRIPT:
-		case ERR_SHADER:
-		default:
-			log_type = OS_LOG_TYPE_ERROR;
-			break;
+	os_log_type_t log_type = OS_LOG_TYPE_ERROR;
+	if (p_type == ERR_WARNING)
+	{
+		log_type = OS_LOG_TYPE_DEFAULT;
 	}
 
 	// Append script backtraces, if any.

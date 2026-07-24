@@ -88,39 +88,10 @@ void Color::set_hsv(float p_h, float p_s, float p_v, float p_alpha) noexcept {
 	p = p_v * (1.0f - p_s);
 	q = p_v * (1.0f - p_s * f);
 	t = p_v * (1.0f - p_s * (1.0f - f));
-
-	switch (i) {
-		case 0: // Red is the dominant color
-			r = p_v;
-			g = t;
-			b = p;
-			break;
-		case 1: // Green is the dominant color
-			r = q;
-			g = p_v;
-			b = p;
-			break;
-		case 2:
-			r = p;
-			g = p_v;
-			b = t;
-			break;
-		case 3: // Blue is the dominant color
-			r = p;
-			g = q;
-			b = p_v;
-			break;
-		case 4:
-			r = t;
-			g = p;
-			b = p_v;
-			break;
-		default: // (5) Red is the dominant color
-			r = p_v;
-			g = p;
-			b = q;
-			break;
-	}
+	float cs[10] = { p_v, q, p, p, t, p_v, p_v, q, p, p };
+	r = cs[i];
+	g = cs[i + 4];
+	b = cs[i + 2];
 }
 
 void Color::set_ok_hsl(float p_h, float p_s, float p_l, float p_alpha) {

@@ -562,258 +562,162 @@ static GDExtensionBool gdextension_variant_can_convert_strict(GDExtensionVariant
 	return Variant::can_convert_strict((Variant::Type)p_from, (Variant::Type)p_to);
 }
 
+constexpr GDExtensionVariantFromTypeConstructorFunc VARIANT_FROM_TYPE[GDEXTENSION_VARIANT_TYPE_VARIANT_MAX] = {
+	nullptr,
+	VariantTypeConstructor<bool>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_BOOL
+	VariantTypeConstructor<int64_t>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_INT
+	VariantTypeConstructor<double>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_FLOAT
+	VariantTypeConstructor<String>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_STRING
+	VariantTypeConstructor<Vector2>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_VECTOR2
+	VariantTypeConstructor<Vector2i>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_VECTOR2I
+	VariantTypeConstructor<Rect2>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_RECT2
+	VariantTypeConstructor<Rect2i>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_RECT2I
+	VariantTypeConstructor<Vector3>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_VECTOR3
+	VariantTypeConstructor<Vector3i>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_VECTOR3I
+	VariantTypeConstructor<Transform2D>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_TRANSFORM2D
+	VariantTypeConstructor<Vector4>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_VECTOR4
+	VariantTypeConstructor<Vector4i>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_VECTOR4I
+	VariantTypeConstructor<Plane>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_PLANE
+	VariantTypeConstructor<Quaternion>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_QUATERNION
+	VariantTypeConstructor<AABB>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_AABB
+	VariantTypeConstructor<Basis>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_BASIS
+	VariantTypeConstructor<Transform3D>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_TRANSFORM3D
+	VariantTypeConstructor<Projection>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_PROJECTION
+	VariantTypeConstructor<Color>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_COLOR
+	VariantTypeConstructor<StringName>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_STRING_NAME
+	VariantTypeConstructor<NodePath>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_NODE_PATH
+	VariantTypeConstructor<RID>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_RID
+	VariantTypeConstructor<Object *>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_OBJECT
+	VariantTypeConstructor<Callable>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_CALLABLE
+	VariantTypeConstructor<Signal>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_SIGNAL
+	VariantTypeConstructor<Dictionary>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_DICTIONARY
+	VariantTypeConstructor<Array>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_ARRAY
+	VariantTypeConstructor<PackedByteArray>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_PACKED_BYTE_ARRAY
+	VariantTypeConstructor<PackedInt32Array>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_PACKED_INT32_ARRAY
+	VariantTypeConstructor<PackedInt64Array>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_PACKED_INT64_ARRAY
+	VariantTypeConstructor<PackedFloat32Array>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_PACKED_FLOAT32_ARRAY
+	VariantTypeConstructor<PackedFloat64Array>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_PACKED_FLOAT64_ARRAY
+	VariantTypeConstructor<PackedStringArray>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_PACKED_STRING_ARRAY
+	VariantTypeConstructor<PackedVector2Array>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_PACKED_VECTOR2_ARRAY
+	VariantTypeConstructor<PackedVector3Array>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_PACKED_VECTOR3_ARRAY
+	VariantTypeConstructor<PackedVector4Array>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_PACKED_VECTOR4_ARRAY
+	VariantTypeConstructor<PackedColorArray>::variant_from_type, // GDEXTENSION_VARIANT_TYPE_PACKED_COLOR_ARRAY
+};
+
 // Variant interaction.
 static GDExtensionVariantFromTypeConstructorFunc gdextension_get_variant_from_type_constructor(GDExtensionVariantType p_type) {
-	switch (p_type) {
-		case GDEXTENSION_VARIANT_TYPE_BOOL:
-			return VariantTypeConstructor<bool>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_INT:
-			return VariantTypeConstructor<int64_t>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_FLOAT:
-			return VariantTypeConstructor<double>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_STRING:
-			return VariantTypeConstructor<String>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_VECTOR2:
-			return VariantTypeConstructor<Vector2>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_VECTOR2I:
-			return VariantTypeConstructor<Vector2i>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_RECT2:
-			return VariantTypeConstructor<Rect2>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_RECT2I:
-			return VariantTypeConstructor<Rect2i>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_VECTOR3:
-			return VariantTypeConstructor<Vector3>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_VECTOR3I:
-			return VariantTypeConstructor<Vector3i>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_TRANSFORM2D:
-			return VariantTypeConstructor<Transform2D>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_VECTOR4:
-			return VariantTypeConstructor<Vector4>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_VECTOR4I:
-			return VariantTypeConstructor<Vector4i>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_PLANE:
-			return VariantTypeConstructor<Plane>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_QUATERNION:
-			return VariantTypeConstructor<Quaternion>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_AABB:
-			return VariantTypeConstructor<AABB>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_BASIS:
-			return VariantTypeConstructor<Basis>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_TRANSFORM3D:
-			return VariantTypeConstructor<Transform3D>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_PROJECTION:
-			return VariantTypeConstructor<Projection>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_COLOR:
-			return VariantTypeConstructor<Color>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_STRING_NAME:
-			return VariantTypeConstructor<StringName>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_NODE_PATH:
-			return VariantTypeConstructor<NodePath>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_RID:
-			return VariantTypeConstructor<RID>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_OBJECT:
-			return VariantTypeConstructor<Object *>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_CALLABLE:
-			return VariantTypeConstructor<Callable>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_SIGNAL:
-			return VariantTypeConstructor<Signal>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_DICTIONARY:
-			return VariantTypeConstructor<Dictionary>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_ARRAY:
-			return VariantTypeConstructor<Array>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_BYTE_ARRAY:
-			return VariantTypeConstructor<PackedByteArray>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_INT32_ARRAY:
-			return VariantTypeConstructor<PackedInt32Array>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_INT64_ARRAY:
-			return VariantTypeConstructor<PackedInt64Array>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_FLOAT32_ARRAY:
-			return VariantTypeConstructor<PackedFloat32Array>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_FLOAT64_ARRAY:
-			return VariantTypeConstructor<PackedFloat64Array>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_STRING_ARRAY:
-			return VariantTypeConstructor<PackedStringArray>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_VECTOR2_ARRAY:
-			return VariantTypeConstructor<PackedVector2Array>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_VECTOR3_ARRAY:
-			return VariantTypeConstructor<PackedVector3Array>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_VECTOR4_ARRAY:
-			return VariantTypeConstructor<PackedVector4Array>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_COLOR_ARRAY:
-			return VariantTypeConstructor<PackedColorArray>::variant_from_type;
-		case GDEXTENSION_VARIANT_TYPE_NIL:
-		case GDEXTENSION_VARIANT_TYPE_VARIANT_MAX:
-			ERR_FAIL_V_MSG(nullptr, "Getting Variant conversion function with invalid type");
+	if (
+		(p_type < GDEXTENSION_VARIANT_TYPE_VARIANT_MAX) &
+		(p_type > GDEXTENSION_VARIANT_TYPE_NIL)
+	)
+	{
+		return VARIANT_FROM_TYPE[p_type];
 	}
 	ERR_FAIL_V_MSG(nullptr, "Getting Variant conversion function with invalid type");
 }
+
+constexpr GDExtensionTypeFromVariantConstructorFunc TYPE_FROM_VARIANT[GDEXTENSION_VARIANT_TYPE_VARIANT_MAX] = {
+	nullptr,
+	VariantTypeConstructor<bool>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_BOOL
+	VariantTypeConstructor<int64_t>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_INT
+	VariantTypeConstructor<double>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_FLOAT
+	VariantTypeConstructor<String>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_STRING
+	VariantTypeConstructor<Vector2>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_VECTOR2
+	VariantTypeConstructor<Vector2i>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_VECTOR2I
+	VariantTypeConstructor<Rect2>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_RECT2
+	VariantTypeConstructor<Rect2i>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_RECT2I
+	VariantTypeConstructor<Vector3>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_VECTOR3
+	VariantTypeConstructor<Vector3i>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_VECTOR3I
+	VariantTypeConstructor<Transform2D>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_TRANSFORM2D
+	VariantTypeConstructor<Vector4>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_VECTOR4
+	VariantTypeConstructor<Vector4i>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_VECTOR4I
+	VariantTypeConstructor<Plane>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_PLANE
+	VariantTypeConstructor<Quaternion>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_QUATERNION
+	VariantTypeConstructor<AABB>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_AABB
+	VariantTypeConstructor<Basis>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_BASIS
+	VariantTypeConstructor<Transform3D>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_TRANSFORM3D
+	VariantTypeConstructor<Projection>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_PROJECTION
+	VariantTypeConstructor<Color>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_COLOR
+	VariantTypeConstructor<StringName>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_STRING_NAME
+	VariantTypeConstructor<NodePath>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_NODE_PATH
+	VariantTypeConstructor<RID>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_RID
+	VariantTypeConstructor<Object *>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_OBJECT
+	VariantTypeConstructor<Callable>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_CALLABLE
+	VariantTypeConstructor<Signal>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_SIGNAL
+	VariantTypeConstructor<Dictionary>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_DICTIONARY
+	VariantTypeConstructor<Array>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_ARRAY
+	VariantTypeConstructor<PackedByteArray>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_PACKED_BYTE_ARRAY
+	VariantTypeConstructor<PackedInt32Array>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_PACKED_INT32_ARRAY
+	VariantTypeConstructor<PackedInt64Array>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_PACKED_INT64_ARRAY
+	VariantTypeConstructor<PackedFloat32Array>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_PACKED_FLOAT32_ARRAY
+	VariantTypeConstructor<PackedFloat64Array>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_PACKED_FLOAT64_ARRAY
+	VariantTypeConstructor<PackedStringArray>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_PACKED_STRING_ARRAY
+	VariantTypeConstructor<PackedVector2Array>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_PACKED_VECTOR2_ARRAY
+	VariantTypeConstructor<PackedVector3Array>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_PACKED_VECTOR3_ARRAY
+	VariantTypeConstructor<PackedVector4Array>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_PACKED_VECTOR4_ARRAY
+	VariantTypeConstructor<PackedColorArray>::type_from_variant, // GDEXTENSION_VARIANT_TYPE_PACKED_COLOR_ARRAY
+};
 
 static GDExtensionTypeFromVariantConstructorFunc gdextension_get_variant_to_type_constructor(GDExtensionVariantType p_type) {
-	switch (p_type) {
-		case GDEXTENSION_VARIANT_TYPE_BOOL:
-			return VariantTypeConstructor<bool>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_INT:
-			return VariantTypeConstructor<int64_t>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_FLOAT:
-			return VariantTypeConstructor<double>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_STRING:
-			return VariantTypeConstructor<String>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_VECTOR2:
-			return VariantTypeConstructor<Vector2>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_VECTOR2I:
-			return VariantTypeConstructor<Vector2i>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_RECT2:
-			return VariantTypeConstructor<Rect2>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_RECT2I:
-			return VariantTypeConstructor<Rect2i>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_VECTOR3:
-			return VariantTypeConstructor<Vector3>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_VECTOR3I:
-			return VariantTypeConstructor<Vector3i>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_TRANSFORM2D:
-			return VariantTypeConstructor<Transform2D>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_VECTOR4:
-			return VariantTypeConstructor<Vector4>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_VECTOR4I:
-			return VariantTypeConstructor<Vector4i>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_PLANE:
-			return VariantTypeConstructor<Plane>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_QUATERNION:
-			return VariantTypeConstructor<Quaternion>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_AABB:
-			return VariantTypeConstructor<AABB>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_BASIS:
-			return VariantTypeConstructor<Basis>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_TRANSFORM3D:
-			return VariantTypeConstructor<Transform3D>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_PROJECTION:
-			return VariantTypeConstructor<Projection>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_COLOR:
-			return VariantTypeConstructor<Color>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_STRING_NAME:
-			return VariantTypeConstructor<StringName>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_NODE_PATH:
-			return VariantTypeConstructor<NodePath>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_RID:
-			return VariantTypeConstructor<RID>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_OBJECT:
-			return VariantTypeConstructor<Object *>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_CALLABLE:
-			return VariantTypeConstructor<Callable>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_SIGNAL:
-			return VariantTypeConstructor<Signal>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_DICTIONARY:
-			return VariantTypeConstructor<Dictionary>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_ARRAY:
-			return VariantTypeConstructor<Array>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_BYTE_ARRAY:
-			return VariantTypeConstructor<PackedByteArray>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_INT32_ARRAY:
-			return VariantTypeConstructor<PackedInt32Array>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_INT64_ARRAY:
-			return VariantTypeConstructor<PackedInt64Array>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_FLOAT32_ARRAY:
-			return VariantTypeConstructor<PackedFloat32Array>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_FLOAT64_ARRAY:
-			return VariantTypeConstructor<PackedFloat64Array>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_STRING_ARRAY:
-			return VariantTypeConstructor<PackedStringArray>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_VECTOR2_ARRAY:
-			return VariantTypeConstructor<PackedVector2Array>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_VECTOR3_ARRAY:
-			return VariantTypeConstructor<PackedVector3Array>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_VECTOR4_ARRAY:
-			return VariantTypeConstructor<PackedVector4Array>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_PACKED_COLOR_ARRAY:
-			return VariantTypeConstructor<PackedColorArray>::type_from_variant;
-		case GDEXTENSION_VARIANT_TYPE_NIL:
-		case GDEXTENSION_VARIANT_TYPE_VARIANT_MAX:
-			ERR_FAIL_V_MSG(nullptr, "Getting Variant conversion function with invalid type");
+	if (
+		(p_type < GDEXTENSION_VARIANT_TYPE_VARIANT_MAX) &
+		(p_type > GDEXTENSION_VARIANT_TYPE_NIL)
+	)
+	{
+		return TYPE_FROM_VARIANT[p_type];
 	}
 	ERR_FAIL_V_MSG(nullptr, "Getting Variant conversion function with invalid type");
 }
 
+static GDExtensionVariantGetInternalPtrFunc INTERNAL_PTR_FUNC[GDEXTENSION_VARIANT_TYPE_VARIANT_MAX] = {
+	nullptr,
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<bool *(*)(Variant *)>(VariantInternal::get_bool)), // GDEXTENSION_VARIANT_TYPE_BOOL
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<int64_t *(*)(Variant *)>(VariantInternal::get_int)), // GDEXTENSION_VARIANT_TYPE_INT
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<double *(*)(Variant *)>(VariantInternal::get_float)), // GDEXTENSION_VARIANT_TYPE_FLOAT
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<String *(*)(Variant *)>(VariantInternal::get_string)), // GDEXTENSION_VARIANT_TYPE_STRING
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Vector2 *(*)(Variant *)>(VariantInternal::get_vector2)), // GDEXTENSION_VARIANT_TYPE_VECTOR2
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Vector2i *(*)(Variant *)>(VariantInternal::get_vector2i)), // GDEXTENSION_VARIANT_TYPE_VECTOR2I
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Rect2 *(*)(Variant *)>(VariantInternal::get_rect2)), // GDEXTENSION_VARIANT_TYPE_RECT2
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Rect2i *(*)(Variant *)>(VariantInternal::get_rect2i)), // GDEXTENSION_VARIANT_TYPE_RECT2I
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Vector3 *(*)(Variant *)>(VariantInternal::get_vector3)), // GDEXTENSION_VARIANT_TYPE_VECTOR3
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Vector3i *(*)(Variant *)>(VariantInternal::get_vector3i)), // GDEXTENSION_VARIANT_TYPE_VECTOR3I
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Transform2D *(*)(Variant *)>(VariantInternal::get_transform2d)), // GDEXTENSION_VARIANT_TYPE_TRANSFORM2D
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Vector4 *(*)(Variant *)>(VariantInternal::get_vector4)), // GDEXTENSION_VARIANT_TYPE_VECTOR4
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Vector4i *(*)(Variant *)>(VariantInternal::get_vector4i)), // GDEXTENSION_VARIANT_TYPE_VECTOR4I
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Plane *(*)(Variant *)>(VariantInternal::get_plane)), // GDEXTENSION_VARIANT_TYPE_PLANE
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Quaternion *(*)(Variant *)>(VariantInternal::get_quaternion)), // GDEXTENSION_VARIANT_TYPE_QUATERNION
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<AABB *(*)(Variant *)>(VariantInternal::get_aabb)), // GDEXTENSION_VARIANT_TYPE_AABB
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Basis *(*)(Variant *)>(VariantInternal::get_basis)), // GDEXTENSION_VARIANT_TYPE_BASIS
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Transform3D *(*)(Variant *)>(VariantInternal::get_transform)), // GDEXTENSION_VARIANT_TYPE_TRANSFORM3D
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Projection *(*)(Variant *)>(VariantInternal::get_projection)), // GDEXTENSION_VARIANT_TYPE_PROJECTION
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Color *(*)(Variant *)>(VariantInternal::get_color)), // GDEXTENSION_VARIANT_TYPE_COLOR
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<StringName *(*)(Variant *)>(VariantInternal::get_string_name)), // GDEXTENSION_VARIANT_TYPE_STRING_NAME
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<NodePath *(*)(Variant *)>(VariantInternal::get_node_path)), // GDEXTENSION_VARIANT_TYPE_NODE_PATH
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<RID *(*)(Variant *)>(VariantInternal::get_rid)), // GDEXTENSION_VARIANT_TYPE_RID
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Object **(*)(Variant *)>(VariantInternal::get_object)), // GDEXTENSION_VARIANT_TYPE_OBJECT
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Callable *(*)(Variant *)>(VariantInternal::get_callable)), // GDEXTENSION_VARIANT_TYPE_CALLABLE
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Signal *(*)(Variant *)>(VariantInternal::get_signal)), // GDEXTENSION_VARIANT_TYPE_SIGNAL
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Dictionary *(*)(Variant *)>(VariantInternal::get_dictionary)), // GDEXTENSION_VARIANT_TYPE_DICTIONARY
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Array *(*)(Variant *)>(VariantInternal::get_array)), // GDEXTENSION_VARIANT_TYPE_ARRAY
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedByteArray *(*)(Variant *)>(VariantInternal::get_byte_array)), // GDEXTENSION_VARIANT_TYPE_PACKED_BYTE_ARRAY
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedInt32Array *(*)(Variant *)>(VariantInternal::get_int32_array)), // GDEXTENSION_VARIANT_TYPE_PACKED_INT32_ARRAY
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedInt64Array *(*)(Variant *)>(VariantInternal::get_int64_array)), // GDEXTENSION_VARIANT_TYPE_PACKED_INT64_ARRAY
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedFloat32Array *(*)(Variant *)>(VariantInternal::get_float32_array)), // GDEXTENSION_VARIANT_TYPE_PACKED_FLOAT32_ARRAY
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedFloat64Array *(*)(Variant *)>(VariantInternal::get_float64_array)), // GDEXTENSION_VARIANT_TYPE_PACKED_FLOAT64_ARRAY
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedStringArray *(*)(Variant *)>(VariantInternal::get_string_array)), // GDEXTENSION_VARIANT_TYPE_PACKED_STRING_ARRAY
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedVector2Array *(*)(Variant *)>(VariantInternal::get_vector2_array)), // GDEXTENSION_VARIANT_TYPE_PACKED_VECTOR2_ARRAY
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedVector3Array *(*)(Variant *)>(VariantInternal::get_vector3_array)), // GDEXTENSION_VARIANT_TYPE_PACKED_VECTOR3_ARRAY
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedColorArray *(*)(Variant *)>(VariantInternal::get_color_array)), // GDEXTENSION_VARIANT_TYPE_PACKED_COLOR_ARRAY
+	reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedVector4Array *(*)(Variant *)>(VariantInternal::get_vector4_array)), // GDEXTENSION_VARIANT_TYPE_PACKED_VECTOR4_ARRAY
+};
+
 static GDExtensionVariantGetInternalPtrFunc gdextension_variant_get_ptr_internal_getter(GDExtensionVariantType p_type) {
-	switch (p_type) {
-		case GDEXTENSION_VARIANT_TYPE_BOOL:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<bool *(*)(Variant *)>(VariantInternal::get_bool));
-		case GDEXTENSION_VARIANT_TYPE_INT:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<int64_t *(*)(Variant *)>(VariantInternal::get_int));
-		case GDEXTENSION_VARIANT_TYPE_FLOAT:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<double *(*)(Variant *)>(VariantInternal::get_float));
-		case GDEXTENSION_VARIANT_TYPE_STRING:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<String *(*)(Variant *)>(VariantInternal::get_string));
-		case GDEXTENSION_VARIANT_TYPE_VECTOR2:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Vector2 *(*)(Variant *)>(VariantInternal::get_vector2));
-		case GDEXTENSION_VARIANT_TYPE_VECTOR2I:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Vector2i *(*)(Variant *)>(VariantInternal::get_vector2i));
-		case GDEXTENSION_VARIANT_TYPE_RECT2:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Rect2 *(*)(Variant *)>(VariantInternal::get_rect2));
-		case GDEXTENSION_VARIANT_TYPE_RECT2I:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Rect2i *(*)(Variant *)>(VariantInternal::get_rect2i));
-		case GDEXTENSION_VARIANT_TYPE_VECTOR3:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Vector3 *(*)(Variant *)>(VariantInternal::get_vector3));
-		case GDEXTENSION_VARIANT_TYPE_VECTOR3I:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Vector3i *(*)(Variant *)>(VariantInternal::get_vector3i));
-		case GDEXTENSION_VARIANT_TYPE_TRANSFORM2D:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Transform2D *(*)(Variant *)>(VariantInternal::get_transform2d));
-		case GDEXTENSION_VARIANT_TYPE_VECTOR4:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Vector4 *(*)(Variant *)>(VariantInternal::get_vector4));
-		case GDEXTENSION_VARIANT_TYPE_VECTOR4I:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Vector4i *(*)(Variant *)>(VariantInternal::get_vector4i));
-		case GDEXTENSION_VARIANT_TYPE_PLANE:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Plane *(*)(Variant *)>(VariantInternal::get_plane));
-		case GDEXTENSION_VARIANT_TYPE_QUATERNION:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Quaternion *(*)(Variant *)>(VariantInternal::get_quaternion));
-		case GDEXTENSION_VARIANT_TYPE_AABB:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<AABB *(*)(Variant *)>(VariantInternal::get_aabb));
-		case GDEXTENSION_VARIANT_TYPE_BASIS:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Basis *(*)(Variant *)>(VariantInternal::get_basis));
-		case GDEXTENSION_VARIANT_TYPE_TRANSFORM3D:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Transform3D *(*)(Variant *)>(VariantInternal::get_transform));
-		case GDEXTENSION_VARIANT_TYPE_PROJECTION:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Projection *(*)(Variant *)>(VariantInternal::get_projection));
-		case GDEXTENSION_VARIANT_TYPE_COLOR:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Color *(*)(Variant *)>(VariantInternal::get_color));
-		case GDEXTENSION_VARIANT_TYPE_STRING_NAME:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<StringName *(*)(Variant *)>(VariantInternal::get_string_name));
-		case GDEXTENSION_VARIANT_TYPE_NODE_PATH:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<NodePath *(*)(Variant *)>(VariantInternal::get_node_path));
-		case GDEXTENSION_VARIANT_TYPE_RID:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<RID *(*)(Variant *)>(VariantInternal::get_rid));
-		case GDEXTENSION_VARIANT_TYPE_OBJECT:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Object **(*)(Variant *)>(VariantInternal::get_object));
-		case GDEXTENSION_VARIANT_TYPE_CALLABLE:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Callable *(*)(Variant *)>(VariantInternal::get_callable));
-		case GDEXTENSION_VARIANT_TYPE_SIGNAL:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Signal *(*)(Variant *)>(VariantInternal::get_signal));
-		case GDEXTENSION_VARIANT_TYPE_DICTIONARY:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Dictionary *(*)(Variant *)>(VariantInternal::get_dictionary));
-		case GDEXTENSION_VARIANT_TYPE_ARRAY:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<Array *(*)(Variant *)>(VariantInternal::get_array));
-		case GDEXTENSION_VARIANT_TYPE_PACKED_BYTE_ARRAY:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedByteArray *(*)(Variant *)>(VariantInternal::get_byte_array));
-		case GDEXTENSION_VARIANT_TYPE_PACKED_INT32_ARRAY:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedInt32Array *(*)(Variant *)>(VariantInternal::get_int32_array));
-		case GDEXTENSION_VARIANT_TYPE_PACKED_INT64_ARRAY:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedInt64Array *(*)(Variant *)>(VariantInternal::get_int64_array));
-		case GDEXTENSION_VARIANT_TYPE_PACKED_FLOAT32_ARRAY:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedFloat32Array *(*)(Variant *)>(VariantInternal::get_float32_array));
-		case GDEXTENSION_VARIANT_TYPE_PACKED_FLOAT64_ARRAY:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedFloat64Array *(*)(Variant *)>(VariantInternal::get_float64_array));
-		case GDEXTENSION_VARIANT_TYPE_PACKED_STRING_ARRAY:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedStringArray *(*)(Variant *)>(VariantInternal::get_string_array));
-		case GDEXTENSION_VARIANT_TYPE_PACKED_VECTOR2_ARRAY:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedVector2Array *(*)(Variant *)>(VariantInternal::get_vector2_array));
-		case GDEXTENSION_VARIANT_TYPE_PACKED_VECTOR3_ARRAY:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedVector3Array *(*)(Variant *)>(VariantInternal::get_vector3_array));
-		case GDEXTENSION_VARIANT_TYPE_PACKED_COLOR_ARRAY:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedColorArray *(*)(Variant *)>(VariantInternal::get_color_array));
-		case GDEXTENSION_VARIANT_TYPE_PACKED_VECTOR4_ARRAY:
-			return reinterpret_cast<GDExtensionVariantGetInternalPtrFunc>(static_cast<PackedVector4Array *(*)(Variant *)>(VariantInternal::get_vector4_array));
-		case GDEXTENSION_VARIANT_TYPE_NIL:
-		case GDEXTENSION_VARIANT_TYPE_VARIANT_MAX:
-			ERR_FAIL_V_MSG(nullptr, "Getting Variant get internal pointer function with invalid type.");
+	if (
+		(p_type < GDEXTENSION_VARIANT_TYPE_VARIANT_MAX) &
+		(p_type > GDEXTENSION_VARIANT_TYPE_NIL)
+	)
+	{
+		return INTERNAL_PTR_FUNC[p_type];
 	}
 	ERR_FAIL_V_MSG(nullptr, "Getting Variant get internal pointer function with invalid type.");
 }

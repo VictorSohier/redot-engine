@@ -605,17 +605,12 @@ Dictionary GDExtensionAPIDump::generate_extension_api(bool p_include_docs) {
 				Variant::Type rt = Variant::get_utility_function_return_type(name);
 				func["return_type"] = rt == Variant::NIL ? String("Variant") : Variant::get_type_name(rt);
 			}
-			switch (Variant::get_utility_function_type(name)) {
-				case Variant::UTILITY_FUNC_TYPE_MATH:
-					func["category"] = "math";
-					break;
-				case Variant::UTILITY_FUNC_TYPE_RANDOM:
-					func["category"] = "random";
-					break;
-				case Variant::UTILITY_FUNC_TYPE_GENERAL:
-					func["category"] = "general";
-					break;
-			}
+			constexpr const char *UTILITY_FUNCTION_TYPE_CATEGORY[3] = {
+				"math", // Variant::UTILITY_FUNC_TYPE_MATH
+				"random", // Variant::UTILITY_FUNC_TYPE_RANDOM
+				"general", // Variant::UTILITY_FUNC_TYPE_GENERAL
+			};
+			func["category"] = UTILITY_FUNCTION_TYPE_CATEGORY[Variant::get_utility_function_type(name)];
 			bool vararg = Variant::is_utility_function_vararg(name);
 			func["is_vararg"] = Variant::is_utility_function_vararg(name);
 			func["hash"] = Variant::get_utility_function_hash(name);

@@ -250,20 +250,15 @@ Vector<Vector<Point2>> Geometry2D::_polypaths_do_operation(PolyBooleanOperation 
 	using namespace Clipper2Lib;
 
 	ClipType op = ClipType::Union;
-
-	switch (p_op) {
-		case OPERATION_UNION:
-			op = ClipType::Union;
-			break;
-		case OPERATION_DIFFERENCE:
-			op = ClipType::Difference;
-			break;
-		case OPERATION_INTERSECTION:
-			op = ClipType::Intersection;
-			break;
-		case OPERATION_XOR:
-			op = ClipType::Xor;
-			break;
+	constexpr ClipType POLYBOOLOP_TO_CLIPTYPE[OPERATION_XOR + 1] = {
+		ClipType::Union,
+		ClipType::Difference,
+		ClipType::Intersection,
+		ClipType::Xor,
+	};
+	if ((p_op >= OPERATION_UNION) | (p_op <= OPERATION_XOR))
+	{
+		op = POLYBOOLOP_TO_CLIPTYPE[p_op];
 	}
 
 	PathD path_a(p_polypath_a.size());
@@ -310,37 +305,26 @@ Vector<Vector<Point2>> Geometry2D::_polypath_offset(const Vector<Point2> &p_poly
 	using namespace Clipper2Lib;
 
 	JoinType jt = JoinType::Square;
-
-	switch (p_join_type) {
-		case JOIN_SQUARE:
-			jt = JoinType::Square;
-			break;
-		case JOIN_ROUND:
-			jt = JoinType::Round;
-			break;
-		case JOIN_MITER:
-			jt = JoinType::Miter;
-			break;
-	}
-
 	EndType et = EndType::Polygon;
-
-	switch (p_end_type) {
-		case END_POLYGON:
-			et = EndType::Polygon;
-			break;
-		case END_JOINED:
-			et = EndType::Joined;
-			break;
-		case END_BUTT:
-			et = EndType::Butt;
-			break;
-		case END_SQUARE:
-			et = EndType::Square;
-			break;
-		case END_ROUND:
-			et = EndType::Round;
-			break;
+	constexpr JoinType POLYJOINTYPE_TO_JOINTYPE[JOIN_MITER + 1] = {
+		JoinType::Square,
+		JoinType::Round,
+		JoinType::Miter,
+	};
+	constexpr EndType POLYENDTYPE_TO_ENDTYPE[END_ROUND + 1] = {
+		EndType::Polygon,
+		EndType::Joined,
+		EndType::Butt,
+		EndType::Square,
+		EndType::Round,
+	};
+	if ((p_join_type >= JOIN_SQUARE) | (p_join_type <= JOIN_MITER))
+	{
+		jt = POLYJOINTYPE_TO_JOINTYPE[p_join_type];
+	}
+	if ((p_end_type >= END_POLYGON) | (p_end_type <= END_ROUND))
+	{
+		et = POLYENDTYPE_TO_ENDTYPE[p_end_type];
 	}
 
 	PathD polypath(p_polypath.size());

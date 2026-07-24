@@ -1493,18 +1493,12 @@ Input::JoyEvent Input::_get_mapped_button_event(const JoyDeviceMapping &mapping,
 					return event;
 				case TYPE_AXIS:
 					event.index = (int)binding.output.axis.axis;
-					switch (binding.output.axis.range) {
-						case POSITIVE_HALF_AXIS:
-							event.value = 1;
-							break;
-						case NEGATIVE_HALF_AXIS:
-							event.value = -1;
-							break;
-						case FULL_AXIS:
-							// It doesn't make sense for a button to map to a full axis,
-							// but keeping as a default for a trigger with a positive half-axis.
-							event.value = 1;
-							break;
+					if (
+						(binding.output.axis.range >= NEGATIVE_HALF_AXIS) &
+						(binding.output.axis.range <= POSITIVE_HALF_AXIS)
+					)
+					{
+						event.value = JOY_AXIS_RANGE_VALUE[binding.output.axis.range - NEGATIVE_HALF_AXIS];
 					}
 					return event;
 				default:
@@ -1529,51 +1523,30 @@ Input::JoyEvent Input::_get_mapped_axis_event(const JoyDeviceMapping &mapping, J
 					(binding.input.axis.range == POSITIVE_HALF_AXIS && value >= 0) ||
 					(binding.input.axis.range == NEGATIVE_HALF_AXIS && value < 0)) {
 				event.type = binding.outputType;
-				float shifted_positive_value = 0;
-				switch (binding.input.axis.range) {
-					case POSITIVE_HALF_AXIS:
-						shifted_positive_value = value;
-						break;
-					case NEGATIVE_HALF_AXIS:
-						shifted_positive_value = value + 1;
-						break;
-					case FULL_AXIS:
-						shifted_positive_value = (value + 1) / 2;
-						break;
-				}
+				float shiftedPositiveValues[POSITIVE_HALF_AXIS - NEGATIVE_HALF_AXIS + 1] = {
+					value,
+					value + 1,
+					(value + 1) / 2,
+				};
+				float shifted_positive_value = shiftedPositiveValues[binding.input.axis.range - NEGATIVE_HALF_AXIS];
+				float reverseShiftedPositiveValues[POSITIVE_HALF_AXIS - NEGATIVE_HALF_AXIS + 1] = {
+					shifted_positive_value,
+					1 - shifted_positive_value,
+					(shifted_positive_value * 2) - 1,
+				};
 				switch (binding.outputType) {
 					case TYPE_BUTTON:
 						event.index = (int)binding.output.button;
-						switch (binding.input.axis.range) {
-							case POSITIVE_HALF_AXIS:
-								event.value = shifted_positive_value;
-								break;
-							case NEGATIVE_HALF_AXIS:
-								event.value = 1 - shifted_positive_value;
-								break;
-							case FULL_AXIS:
-								// It doesn't make sense for a full axis to map to a button,
-								// but keeping as a default for a trigger with a positive half-axis.
-								event.value = (shifted_positive_value * 2) - 1;
-								break;
-						}
+						// It doesn't make sense for a full axis to map to a button,
+						// but keeping as a default for a trigger with a positive half-axis.
+						event.value = reverseShiftedPositiveValues[binding.input.axis.range - NEGATIVE_HALF_AXIS];
 						return event;
 					case TYPE_AXIS:
 						event.index = (int)binding.output.axis.axis;
 						event.value = value;
 						r_range = binding.output.axis.range;
 						if (binding.output.axis.range != binding.input.axis.range) {
-							switch (binding.output.axis.range) {
-								case POSITIVE_HALF_AXIS:
-									event.value = shifted_positive_value;
-									break;
-								case NEGATIVE_HALF_AXIS:
-									event.value = shifted_positive_value - 1;
-									break;
-								case FULL_AXIS:
-									event.value = (shifted_positive_value * 2) - 1;
-									break;
-							}
+							event.value = reverseShiftedPositiveValues[binding.input.axis.range - NEGATIVE_HALF_AXIS];
 						}
 						return event;
 					default:
@@ -1615,19 +1588,9 @@ void Input::_get_mapped_hat_events(const JoyDeviceMapping &mapping, HatDir p_hat
 					break;
 				case TYPE_AXIS:
 					r_events[(size_t)hat_direction].index = (int)binding.output.axis.axis;
-					switch (binding.output.axis.range) {
-						case POSITIVE_HALF_AXIS:
-							r_events[(size_t)hat_direction].value = 1;
-							break;
-						case NEGATIVE_HALF_AXIS:
-							r_events[(size_t)hat_direction].value = -1;
-							break;
-						case FULL_AXIS:
-							// It doesn't make sense for a hat direction to map to a full axis,
-							// but keeping as a default for a trigger with a positive half-axis.
-							r_events[(size_t)hat_direction].value = 1;
-							break;
-					}
+					// It doesn't make sense for a hat direction to map to a full axis,
+					// but keeping as a default for a trigger with a positive half-axis.
+					r_events[(size_t)hat_direction].value = JOY_AXIS_RANGE_VALUE[binding.output.axis.range - NEGATIVE_HALF_AXIS];
 					break;
 				default:
 					ERR_PRINT_ONCE("Joypad button mapping error.");

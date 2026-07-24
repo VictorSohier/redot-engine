@@ -513,229 +513,161 @@ Ref<Image> TextureStorage::_get_gl_image_and_format(const Ref<Image> &p_image, I
 	bool need_decompress = false;
 	bool decompress_ra_to_rg = false;
 
-	switch (p_format) {
-		case Image::FORMAT_DXT1: {
-			if (config->s3tc_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-				r_gl_format = GL_RGBA;
-				r_gl_type = GL_UNSIGNED_BYTE;
-				r_compressed = true;
-			} else {
-				need_decompress = true;
-			}
-		} break;
-		case Image::FORMAT_DXT3: {
-			if (config->s3tc_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-				r_gl_format = GL_RGBA;
-				r_gl_type = GL_UNSIGNED_BYTE;
-				r_compressed = true;
-			} else {
-				need_decompress = true;
-			}
-		} break;
-		case Image::FORMAT_DXT5: {
-			if (config->s3tc_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-				r_gl_format = GL_RGBA;
-				r_gl_type = GL_UNSIGNED_BYTE;
-				r_compressed = true;
-			} else {
-				need_decompress = true;
-			}
-		} break;
-		case Image::FORMAT_RGTC_R: {
-			if (config->rgtc_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_RED_RGTC1_EXT;
-				r_gl_format = GL_RGBA;
-				r_gl_type = GL_UNSIGNED_BYTE;
-				r_compressed = true;
-			} else {
-				need_decompress = true;
-			}
-		} break;
-		case Image::FORMAT_RGTC_RG: {
-			if (config->rgtc_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_RED_GREEN_RGTC2_EXT;
-				r_gl_format = GL_RGBA;
-				r_gl_type = GL_UNSIGNED_BYTE;
-				r_compressed = true;
-			} else {
-				need_decompress = true;
-			}
-		} break;
-		case Image::FORMAT_BPTC_RGBA: {
-			if (config->bptc_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_RGBA_BPTC_UNORM;
-				r_gl_format = GL_RGBA;
-				r_gl_type = GL_UNSIGNED_BYTE;
-				r_compressed = true;
-			} else {
-				need_decompress = true;
-			}
-		} break;
-		case Image::FORMAT_BPTC_RGBF: {
-			if (config->bptc_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_RGB_BPTC_SIGNED_FLOAT;
-				r_gl_format = GL_RGB;
-				r_gl_type = GL_FLOAT;
-				r_compressed = true;
-			} else {
-				need_decompress = true;
-			}
-		} break;
-		case Image::FORMAT_BPTC_RGBFU: {
-			if (config->bptc_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT;
-				r_gl_format = GL_RGB;
-				r_gl_type = GL_FLOAT;
-				r_compressed = true;
-			} else {
-				need_decompress = true;
-			}
-		} break;
-		case Image::FORMAT_ETC2_R11: {
-			if (config->etc2_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_R11_EAC;
-				r_gl_format = GL_RED;
-				r_gl_type = GL_UNSIGNED_BYTE;
-				r_compressed = true;
-			} else {
-				need_decompress = true;
-			}
-		} break;
-		case Image::FORMAT_ETC2_R11S: {
-			if (config->etc2_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_SIGNED_R11_EAC;
-				r_gl_format = GL_RED;
-				r_gl_type = GL_UNSIGNED_BYTE;
-				r_compressed = true;
-			} else {
-				need_decompress = true;
-			}
-		} break;
-		case Image::FORMAT_ETC2_RG11: {
-			if (config->etc2_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_RG11_EAC;
-				r_gl_format = GL_RG;
-				r_gl_type = GL_UNSIGNED_BYTE;
-				r_compressed = true;
-			} else {
-				need_decompress = true;
-			}
-		} break;
-		case Image::FORMAT_ETC2_RG11S: {
-			if (config->etc2_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_SIGNED_RG11_EAC;
-				r_gl_format = GL_RG;
-				r_gl_type = GL_UNSIGNED_BYTE;
-				r_compressed = true;
-			} else {
-				need_decompress = true;
-			}
-		} break;
-		case Image::FORMAT_ETC:
-		case Image::FORMAT_ETC2_RGB8: {
-			if (config->etc2_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_RGB8_ETC2;
-				r_gl_format = GL_RGB;
-				r_gl_type = GL_UNSIGNED_BYTE;
-				r_compressed = true;
-			} else {
-				need_decompress = true;
-			}
-		} break;
-		case Image::FORMAT_ETC2_RGBA8: {
-			if (config->etc2_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_RGBA8_ETC2_EAC;
-				r_gl_format = GL_RGBA;
-				r_gl_type = GL_UNSIGNED_BYTE;
-				r_compressed = true;
-			} else {
-				need_decompress = true;
-			}
-		} break;
-		case Image::FORMAT_ETC2_RGB8A1: {
-			if (config->etc2_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2;
-				r_gl_format = GL_RGBA;
-				r_gl_type = GL_UNSIGNED_BYTE;
-				r_compressed = true;
-			} else {
-				need_decompress = true;
-			}
-		} break;
-		case Image::FORMAT_ETC2_RA_AS_RG: {
-#ifndef WEB_ENABLED
-			if (config->etc2_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_RGBA8_ETC2_EAC;
-				r_gl_format = GL_RGBA;
-				r_gl_type = GL_UNSIGNED_BYTE;
-				r_compressed = true;
-			} else
-#endif
-			{
-				need_decompress = true;
-			}
-			decompress_ra_to_rg = true;
-		} break;
-		case Image::FORMAT_DXT5_RA_AS_RG: {
-#ifndef WEB_ENABLED
-			if (config->s3tc_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-				r_gl_format = GL_RGBA;
-				r_gl_type = GL_UNSIGNED_BYTE;
-				r_compressed = true;
-			} else
-#endif
-			{
-				need_decompress = true;
-			}
-			decompress_ra_to_rg = true;
-		} break;
-		case Image::FORMAT_ASTC_4x4: {
-			if (config->astc_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_RGBA_ASTC_4x4_KHR;
-				r_gl_format = GL_RGBA;
-				r_gl_type = GL_UNSIGNED_BYTE;
-				r_compressed = true;
-			} else {
-				need_decompress = true;
-			}
-		} break;
-		case Image::FORMAT_ASTC_4x4_HDR: {
-			if (config->astc_hdr_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_RGBA_ASTC_4x4_KHR;
-				r_gl_format = GL_RGBA;
-				r_gl_type = GL_UNSIGNED_BYTE;
-				r_compressed = true;
-			} else {
-				need_decompress = true;
-			}
-		} break;
-		case Image::FORMAT_ASTC_8x8: {
-			if (config->astc_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_RGBA_ASTC_8x8_KHR;
-				r_gl_format = GL_RGBA;
-				r_gl_type = GL_UNSIGNED_BYTE;
-				r_compressed = true;
-			} else {
-				need_decompress = true;
-			}
-		} break;
-		case Image::FORMAT_ASTC_8x8_HDR: {
-			if (config->astc_hdr_supported) {
-				r_gl_internal_format = _EXT_COMPRESSED_RGBA_ASTC_8x8_KHR;
-				r_gl_format = GL_RGBA;
-				r_gl_type = GL_UNSIGNED_BYTE;
-				r_compressed = true;
-			} else {
-				need_decompress = true;
-			}
-		} break;
-		default: {
-			ERR_FAIL_V_MSG(Ref<Image>(), vformat("The image format %d is not supported by the Compatibility renderer.", p_format));
+	struct TXInfoRecord
+	{
+		GLenum internalFormat;
+		GLenum format;
+		GLenum type;
+		bool supported;
+		bool decompressRAtoRG;
+	};
+	TXInfoRecord TX_INFO[Image::FORMAT_MAX - Image::FORMAT_DXT1] = {
+		{ // Image::FORMAT_DXT1
+			.internalFormat = _EXT_COMPRESSED_RGBA_S3TC_DXT1_EXT,
+			.format = GL_RGBA,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->s3tc_supported,
+		},
+		{ // Image::FORMAT_DXT3
+			.internalFormat = _EXT_COMPRESSED_RGBA_S3TC_DXT3_EXT,
+			.format = GL_RGBA,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->s3tc_supported,
+		},
+		{ // Image::FORMAT_DXT5
+			.internalFormat = _EXT_COMPRESSED_RGBA_S3TC_DXT5_EXT,
+			.format = GL_RGBA,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->s3tc_supported,
+		},
+		{ // Image::FORMAT_RGTC_R
+			.internalFormat = _EXT_COMPRESSED_RED_RGTC1_EXT,
+			.format = GL_RGBA,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->rgtc_supported,
+		},
+		{ // Image::FORMAT_RGTC_RG
+			.internalFormat = _EXT_COMPRESSED_RED_GREEN_RGTC2_EXT,
+			.format = GL_RGBA,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->rgtc_supported,
+		},
+		{ // Image::FORMAT_BPTC_RGBA
+			.internalFormat = _EXT_COMPRESSED_RGBA_BPTC_UNORM,
+			.format = GL_RGBA,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->bptc_supported,
+		},
+		{ // Image::FORMAT_BPTC_RGBF
+			.internalFormat = _EXT_COMPRESSED_RGB_BPTC_SIGNED_FLOAT,
+			.format = GL_RGB,
+			.type = GL_FLOAT,
+			.supported = config->bptc_supported,
+		},
+		{ // Image::FORMAT_BPTC_RGBFU
+			.internalFormat = _EXT_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT,
+			.format = GL_RGB,
+			.type = GL_FLOAT,
+			.supported = config->bptc_supported,
+		},
+		{ // Image::FORMAT_ETC
+			.internalFormat = _EXT_COMPRESSED_RGB8_ETC2,
+			.format = GL_RGB,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->etc2_supported,
+		},
+		{ // Image::FORMAT_ETC2_R11
+			.internalFormat = _EXT_COMPRESSED_R11_EAC,
+			.format = GL_RED,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->etc2_supported,
+		},
+		{ // Image::FORMAT_ETC2_R11S
+			.internalFormat = _EXT_COMPRESSED_SIGNED_R11_EAC,
+			.format = GL_RED,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->etc2_supported,
+		},
+		{ // Image::FORMAT_ETC2_RG11
+			.internalFormat = _EXT_COMPRESSED_RG11_EAC,
+			.format = GL_RG,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->etc2_supported,
+		},
+		{ // Image::FORMAT_ETC2_RG11S
+			.internalFormat = _EXT_COMPRESSED_SIGNED_RG11_EAC,
+			.format = GL_RG,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->etc2_supported,
+		},
+		{ // Image::FORMAT_ETC2_RGB8
+			.internalFormat = _EXT_COMPRESSED_RGB8_ETC2,
+			.format = GL_RGB,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->etc2_supported,
+		},
+		{ // Image::FORMAT_ETC2_RGBA8
+			.internalFormat = _EXT_COMPRESSED_RGBA8_ETC2_EAC,
+			.format = GL_RGBA,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->etc2_supported,
+		},
+		{ // Image::FORMAT_ETC2_RGB8A1
+			.internalFormat = _EXT_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2,
+			.format = GL_RGBA,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->etc2_supported,
+		},
+		{ // Image::FORMAT_ETC2_RA_AS_RG
+			.internalFormat = _EXT_COMPRESSED_RGBA8_ETC2_EAC,
+			.format = GL_RGBA,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->etc2_supported,
+			.decompressRAtoRG = true,
+		},
+		{ // Image::FORMAT_DXT5_RA_AS_RG
+			.internalFormat = _EXT_COMPRESSED_RGBA_S3TC_DXT5_EXT,
+			.format = GL_RGBA,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->s3tc_supported,
+			.decompressRAtoRG = true,
+		},
+		{ // Image::FORMAT_ASTC_4x4
+			.internalFormat = _EXT_COMPRESSED_RGBA_ASTC_4x4_KHR,
+			.format = GL_RGBA,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->astc_supported,
+		},
+		{ // Image::FORMAT_ASTC_4x4_HDR
+			.internalFormat = _EXT_COMPRESSED_RGBA_ASTC_4x4_KHR,
+			.format = GL_RGBA,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->astc_hdr_supported,
+		},
+		{ // Image::FORMAT_ASTC_8x8
+			.internalFormat = _EXT_COMPRESSED_RGBA_ASTC_8x8_KHR,
+			.format = GL_RGBA,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->astc_supported,
+		},
+		{ // Image::FORMAT_ASTC_8x8_HDR
+			.internalFormat = _EXT_COMPRESSED_RGBA_ASTC_8x8_KHR,
+			.format = GL_RGBA,
+			.type = GL_UNSIGNED_BYTE,
+			.supported = config->astc_hdr_supported,
+		},
+	};
+	if ((p_format >= Image::FORMAT_DXT1) & (p_format < Image::FORMAT_MAX))
+	{
+		if (TX_INFO[p_format - Image::FORMAT_DXT1].supported) {
+			r_gl_internal_format = TX_INFO[p_format - Image::FORMAT_DXT1].internalFormat;
+			r_gl_format = TX_INFO[p_format - Image::FORMAT_DXT1].format;
+			r_gl_type = TX_INFO[p_format - Image::FORMAT_DXT1].type;
+			r_compressed = true;
+		} else {
+			need_decompress = true;
 		}
+		decompress_ra_to_rg = TX_INFO[p_format - Image::FORMAT_DXT1].decompressRAtoRG;
 	}
 
 	if (need_decompress || p_force_decompress) {
@@ -978,19 +910,23 @@ RID TextureStorage::texture_create_from_native_handle(RS::TextureType p_type, Im
 	texture.active = true;
 	texture.is_from_native_handle = true;
 
-	switch (p_type) {
-		case RS::TEXTURE_TYPE_2D: {
-			texture.type = Texture::TYPE_2D;
-			texture.target = GL_TEXTURE_2D;
-		} break;
-		case RS::TEXTURE_TYPE_3D: {
-			texture.type = Texture::TYPE_3D;
-			texture.target = GL_TEXTURE_3D;
-		} break;
-		case RS::TEXTURE_TYPE_LAYERED: {
-			texture.type = Texture::TYPE_LAYERED;
-			texture.target = GL_TEXTURE_2D_ARRAY;
-		} break;
+	struct TextureTypeInfo
+	{
+		Texture::Type type;
+		GLenum target;
+	};
+	constexpr TextureTypeInfo TX_TYPEINFO[RS::TEXTURE_TYPE_3D + 1] = {
+		{ .type = Texture::TYPE_2D, .target = GL_TEXTURE_2D, },
+		{ .type = Texture::TYPE_LAYERED, .target = GL_TEXTURE_2D_ARRAY, },
+		{ .type = Texture::TYPE_3D, .target = GL_TEXTURE_3D, },
+	};
+	if (
+		(p_type >= RS::TEXTURE_TYPE_2D) &
+		(p_type <= RS::TEXTURE_TYPE_3D)
+	)
+	{
+		texture.type = TX_TYPEINFO[p_type].type;
+		texture.target = TX_TYPEINFO[p_type].target;
 	}
 
 	texture.real_format = texture.format = p_format;
@@ -2931,24 +2867,23 @@ void TextureStorage::render_target_set_sdf_size_and_scale(RID p_render_target, R
 
 Rect2i TextureStorage::_render_target_get_sdf_rect(const RenderTarget *rt) const {
 	Size2i margin;
-	int scale;
-	switch (rt->sdf_oversize) {
-		case RS::VIEWPORT_SDF_OVERSIZE_100_PERCENT: {
-			scale = 100;
-		} break;
-		case RS::VIEWPORT_SDF_OVERSIZE_120_PERCENT: {
-			scale = 120;
-		} break;
-		case RS::VIEWPORT_SDF_OVERSIZE_150_PERCENT: {
-			scale = 150;
-		} break;
-		case RS::VIEWPORT_SDF_OVERSIZE_200_PERCENT: {
-			scale = 200;
-		} break;
-		default: {
-			ERR_PRINT("Invalid viewport SDF oversize, defaulting to 100%.");
-			scale = 100;
-		} break;
+	int scale = 100;
+	constexpr int SCALE[RS::VIEWPORT_SDF_OVERSIZE_MAX] = {
+		100,
+		120,
+		150,
+		200,
+	};
+	if (
+		(rt->sdf_oversize >= RS::VIEWPORT_SDF_OVERSIZE_100_PERCENT) &
+		(rt->sdf_oversize < RS::VIEWPORT_SDF_OVERSIZE_MAX)
+	)
+	{
+		scale = SCALE[rt->sdf_oversize];
+	}
+	else
+	{
+		ERR_PRINT("Invalid viewport SDF oversize, defaulting to 100%.");
 	}
 
 	margin = (rt->size * scale / 100) - rt->size;
@@ -3013,21 +2948,18 @@ void TextureStorage::_render_target_allocate_sdf(RenderTarget *rt) {
 	glBindFramebuffer(GL_FRAMEBUFFER, rt->sdf_texture_write_fb);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, rt->sdf_texture_write, 0);
 
-	int scale;
-	switch (rt->sdf_scale) {
-		case RS::VIEWPORT_SDF_SCALE_100_PERCENT: {
-			scale = 100;
-		} break;
-		case RS::VIEWPORT_SDF_SCALE_50_PERCENT: {
-			scale = 50;
-		} break;
-		case RS::VIEWPORT_SDF_SCALE_25_PERCENT: {
-			scale = 25;
-		} break;
-		default: {
-			ERR_PRINT("Invalid viewport SDF scale, defaulting to 100%.");
-			scale = 100;
-		} break;
+	int scale = 100;
+	constexpr int SCALE[RS::VIEWPORT_SDF_SCALE_MAX] = { 100, 50, 25 };
+	if (
+		(rt->sdf_scale >= RS::VIEWPORT_SDF_SCALE_100_PERCENT) &
+		(rt->sdf_scale < RS::VIEWPORT_SDF_SCALE_MAX)
+	)
+	{
+		scale = SCALE[rt->sdf_scale];
+	}
+	else
+	{
+		ERR_PRINT("Invalid viewport SDF scale, defaulting to 100%.");
 	}
 
 	rt->process_size = size * scale / 100;
@@ -3106,21 +3038,16 @@ void TextureStorage::render_target_sdf_process(RID p_render_target) {
 
 	bool shrink = false;
 
-	switch (rt->sdf_scale) {
-		case RS::VIEWPORT_SDF_SCALE_50_PERCENT: {
-			size[0] >>= 1;
-			size[1] >>= 1;
-			shift = 1;
-			shrink = true;
-		} break;
-		case RS::VIEWPORT_SDF_SCALE_25_PERCENT: {
-			size[0] >>= 2;
-			size[1] >>= 2;
-			shift = 2;
-			shrink = true;
-		} break;
-		default: {
-		};
+	if (
+		(rt->sdf_scale >= RS::VIEWPORT_SDF_SCALE_100_PERCENT) &
+		(rt->sdf_scale < RS::VIEWPORT_SDF_SCALE_MAX)
+	)
+	{
+		size[0] >>= rt->sdf_scale;
+		size[1] >>= rt->sdf_scale;
+		shift = rt->sdf_scale;
+		shrink = (rt->sdf_scale > RS::VIEWPORT_SDF_SCALE_100_PERCENT) &
+			(rt->sdf_scale < RS::VIEWPORT_SDF_SCALE_MAX);
 	}
 
 	GLuint temp_fb;

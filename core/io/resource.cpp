@@ -281,6 +281,11 @@ Variant Resource::_duplicate_recursive(const Variant &p_variant, const Duplicate
 	switch (p_variant.get_type()) {
 		case Variant::OBJECT: {
 			const Ref<Resource> &sr = p_variant;
+			bool SHOULD_DUPLICATE[RESOURCE_DEEP_DUPLICATE_MAX] = {
+				false,
+				p_params.deep && sr->is_built_in(),
+				p_params.deep
+			};
 			bool should_duplicate = false;
 			if (sr.is_valid()) {
 				if ((p_usage & PROPERTY_USAGE_ALWAYS_DUPLICATE)) {
@@ -290,20 +295,9 @@ Variant Resource::_duplicate_recursive(const Variant &p_variant, const Duplicate
 				} else if (p_params.local_scene) {
 					should_duplicate = sr->is_local_to_scene();
 				} else {
-					switch (p_params.subres_mode) {
-						case RESOURCE_DEEP_DUPLICATE_NONE: {
-							should_duplicate = false;
-						} break;
-						case RESOURCE_DEEP_DUPLICATE_INTERNAL: {
-							should_duplicate = p_params.deep && sr->is_built_in();
-						} break;
-						case RESOURCE_DEEP_DUPLICATE_ALL: {
-							should_duplicate = p_params.deep;
-						} break;
-						default: {
-							DEV_ASSERT(false);
-						}
-					}
+					DEV_ASSERT(p_params.subres_mode < RESOURCE_DEEP_DUPLICATE_MAX);
+					DEV_ASSERT(p_params.subres_mode >= RESOURCE_DEEP_DUPLICATE_NONE);
+					should_duplicate = SHOULD_DUPLICATE[p_params.subres_mode];
 					if (should_duplicate) {
 						Ref<Script> scr = sr;
 						if (scr.is_valid()) {

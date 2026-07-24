@@ -55,6 +55,10 @@ void ShaderGLES3::_add_stage(const char *p_code, StageType p_stage_type) {
 	Vector<String> lines = String(p_code).split("\n");
 
 	String text;
+	constexpr StageTemplate::Chunk::Type STAGETYPE_TO_CHUNKTYPE[STAGE_TYPE_MAX] = {
+		StageTemplate::Chunk::TYPE_VERTEX_GLOBALS,
+		StageTemplate::Chunk::TYPE_FRAGMENT_GLOBALS,
+	};
 
 	for (int i = 0; i < lines.size(); i++) {
 		const String &l = lines[i];
@@ -63,15 +67,9 @@ void ShaderGLES3::_add_stage(const char *p_code, StageType p_stage_type) {
 		StageTemplate::Chunk chunk;
 
 		if (l.begins_with("#GLOBALS")) {
-			switch (p_stage_type) {
-				case STAGE_TYPE_VERTEX:
-					chunk.type = StageTemplate::Chunk::TYPE_VERTEX_GLOBALS;
-					break;
-				case STAGE_TYPE_FRAGMENT:
-					chunk.type = StageTemplate::Chunk::TYPE_FRAGMENT_GLOBALS;
-					break;
-				default: {
-				}
+			if ((p_stage_type >= STAGE_TYPE_VERTEX) & (p_stage_type < STAGE_TYPE_MAX))
+			{
+				chunk.type = STAGETYPE_TO_CHUNKTYPE[p_stage_type];
 			}
 
 			push_chunk = true;

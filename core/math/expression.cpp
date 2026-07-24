@@ -976,76 +976,33 @@ Expression::ENode *Expression::_parse_expression() {
 		}
 
 		Variant::Operator op = Variant::OP_MAX;
-
-		switch (tk.type) {
-			case TK_OP_IN:
-				op = Variant::OP_IN;
-				break;
-			case TK_OP_EQUAL:
-				op = Variant::OP_EQUAL;
-				break;
-			case TK_OP_NOT_EQUAL:
-				op = Variant::OP_NOT_EQUAL;
-				break;
-			case TK_OP_LESS:
-				op = Variant::OP_LESS;
-				break;
-			case TK_OP_LESS_EQUAL:
-				op = Variant::OP_LESS_EQUAL;
-				break;
-			case TK_OP_GREATER:
-				op = Variant::OP_GREATER;
-				break;
-			case TK_OP_GREATER_EQUAL:
-				op = Variant::OP_GREATER_EQUAL;
-				break;
-			case TK_OP_AND:
-				op = Variant::OP_AND;
-				break;
-			case TK_OP_OR:
-				op = Variant::OP_OR;
-				break;
-			case TK_OP_NOT:
-				op = Variant::OP_NOT;
-				break;
-			case TK_OP_ADD:
-				op = Variant::OP_ADD;
-				break;
-			case TK_OP_SUB:
-				op = Variant::OP_SUBTRACT;
-				break;
-			case TK_OP_MUL:
-				op = Variant::OP_MULTIPLY;
-				break;
-			case TK_OP_DIV:
-				op = Variant::OP_DIVIDE;
-				break;
-			case TK_OP_MOD:
-				op = Variant::OP_MODULE;
-				break;
-			case TK_OP_POW:
-				op = Variant::OP_POWER;
-				break;
-			case TK_OP_SHIFT_LEFT:
-				op = Variant::OP_SHIFT_LEFT;
-				break;
-			case TK_OP_SHIFT_RIGHT:
-				op = Variant::OP_SHIFT_RIGHT;
-				break;
-			case TK_OP_BIT_AND:
-				op = Variant::OP_BIT_AND;
-				break;
-			case TK_OP_BIT_OR:
-				op = Variant::OP_BIT_OR;
-				break;
-			case TK_OP_BIT_XOR:
-				op = Variant::OP_BIT_XOR;
-				break;
-			case TK_OP_BIT_INVERT:
-				op = Variant::OP_BIT_NEGATE;
-				break;
-			default: {
-			}
+		constexpr Variant::Operator OPS[TK_INPUT - TK_OP_IN] = {
+			Variant::OP_IN, // TK_OP_IN
+			Variant::OP_EQUAL, // TK_OP_EQUAL
+			Variant::OP_NOT_EQUAL, // TK_OP_NOT_EQUAL
+			Variant::OP_LESS, // TK_OP_LESS
+			Variant::OP_LESS_EQUAL, // TK_OP_LESS_EQUAL
+			Variant::OP_GREATER, // TK_OP_GREATER
+			Variant::OP_GREATER_EQUAL, // TK_OP_GREATER_EQUAL
+			Variant::OP_AND, // TK_OP_AND
+			Variant::OP_OR, // TK_OP_OR
+			Variant::OP_NOT, // TK_OP_NOT
+			Variant::OP_ADD, // TK_OP_ADD
+			Variant::OP_SUBTRACT, // TK_OP_SUB
+			Variant::OP_MULTIPLY, // TK_OP_MUL
+			Variant::OP_DIVIDE, // TK_OP_DIV
+			Variant::OP_MODULE, // TK_OP_MOD
+			Variant::OP_POWER, // TK_OP_POW
+			Variant::OP_SHIFT_LEFT, // TK_OP_SHIFT_LEFT
+			Variant::OP_SHIFT_RIGHT, // TK_OP_SHIFT_RIGHT
+			Variant::OP_BIT_AND, // TK_OP_BIT_AND
+			Variant::OP_BIT_OR, // TK_OP_BIT_OR
+			Variant::OP_BIT_XOR, // TK_OP_BIT_XOR
+			Variant::OP_BIT_NEGATE, // TK_OP_BIT_INVERT
+		};
+		if ((tk.type >= TK_OP_IN) & (tk.type < TK_INPUT))
+		{
+			op = OPS[tk.type - TK_OP_IN];
 		}
 
 		if (op == Variant::OP_MAX) { //stop appending stuff
@@ -1068,76 +1025,54 @@ Expression::ENode *Expression::_parse_expression() {
 		int next_op = -1;
 		int min_priority = 0xFFFFF;
 		bool is_unary = false;
+		constexpr uint32_t UNARY_OPS =
+			(1 << Variant::OP_BIT_NEGATE) |
+			(1 << Variant::OP_NEGATE) |
+			(1 << Variant::OP_NOT) |
+			0;
+		constexpr int OP_PRIORITY[Variant::OP_MAX] = {
+			9, // OP_EQUAL
+			9, // OP_NOT_EQUAL
+			9, // OP_LESS
+			9, // OP_LESS_EQUAL
+			9, // OP_GREATER
+			9, // OP_GREATER_EQUAL
+			4, // OP_ADD
+			4, // OP_SUBTRACT
+			3, // OP_MULTIPLY
+			3, // OP_DIVIDE
+			2, // OP_NEGATE
+			2, // OP_POSITIVE
+			3, // OP_MODULE
+			0, // OP_POWER
+			5, // OP_SHIFT_LEFT
+			5, // OP_SHIFT_RIGHT
+			6, // OP_BIT_AND
+			8, // OP_BIT_OR
+			7, // OP_BIT_XOR
+			1, // OP_BIT_NEGATE
+			13, // OP_AND
+			15, // OP_OR
+			14, // OP_XOR
+			12, // OP_NOT
+			11, // OP_IN
+		};
 
 		for (int i = 0; i < expression_nodes.size(); i++) {
 			if (!expression_nodes[i].is_op) {
 				continue;
 			}
 
-			int priority;
-
-			bool unary = false;
-
-			switch (expression_nodes[i].op) {
-				case Variant::OP_POWER:
-					priority = 0;
-					break;
-				case Variant::OP_BIT_NEGATE:
-					priority = 1;
-					unary = true;
-					break;
-				case Variant::OP_NEGATE:
-					priority = 2;
-					unary = true;
-					break;
-				case Variant::OP_MULTIPLY:
-				case Variant::OP_DIVIDE:
-				case Variant::OP_MODULE:
-					priority = 3;
-					break;
-				case Variant::OP_ADD:
-				case Variant::OP_SUBTRACT:
-					priority = 4;
-					break;
-				case Variant::OP_SHIFT_LEFT:
-				case Variant::OP_SHIFT_RIGHT:
-					priority = 5;
-					break;
-				case Variant::OP_BIT_AND:
-					priority = 6;
-					break;
-				case Variant::OP_BIT_XOR:
-					priority = 7;
-					break;
-				case Variant::OP_BIT_OR:
-					priority = 8;
-					break;
-				case Variant::OP_LESS:
-				case Variant::OP_LESS_EQUAL:
-				case Variant::OP_GREATER:
-				case Variant::OP_GREATER_EQUAL:
-				case Variant::OP_EQUAL:
-				case Variant::OP_NOT_EQUAL:
-					priority = 9;
-					break;
-				case Variant::OP_IN:
-					priority = 11;
-					break;
-				case Variant::OP_NOT:
-					priority = 12;
-					unary = true;
-					break;
-				case Variant::OP_AND:
-					priority = 13;
-					break;
-				case Variant::OP_OR:
-					priority = 14;
-					break;
-				default: {
-					_set_error("Parser bug, invalid operator in expression: " + itos(expression_nodes[i].op));
-					return nullptr;
-				}
+			if (
+				(expression_nodes[i].op >= Variant::OP_MAX) |
+				(expression_nodes[i].op < Variant::OP_EQUAL)
+			)
+			{
+				_set_error("Parser bug, invalid operator in expression: " + itos(expression_nodes[i].op));
+				return nullptr;
 			}
+			int priority = OP_PRIORITY[expression_nodes[i].op];
+			bool unary = (UNARY_OPS & (1 << expression_nodes[i].op)) != 0;
 
 			if (priority < min_priority) {
 				// < is used for left to right (default)

@@ -135,16 +135,15 @@ long zipio_seek(voidpf opaque, voidpf stream, uLong offset, int origin) {
 	ERR_FAIL_NULL_V(fa, 0);
 	ERR_FAIL_COND_V(fa->is_null(), 0);
 
+	uint64_t bases[ZLIB_FILEFUNC_SEEK_END + 1] = {
+		0,
+		(*fa)->get_position(),
+		(*fa)->get_length()
+	};
 	uint64_t pos = offset;
-	switch (origin) {
-		case ZLIB_FILEFUNC_SEEK_CUR:
-			pos = (*fa)->get_position() + offset;
-			break;
-		case ZLIB_FILEFUNC_SEEK_END:
-			pos = (*fa)->get_length() + offset;
-			break;
-		default:
-			break;
+	if ((origin >= ZLIB_FILEFUNC_SEEK_SET) & (origin <= ZLIB_FILEFUNC_SEEK_END))
+	{
+		pos = (uint64_t)(bases[origin] + offset);
 	}
 
 	(*fa)->seek(pos);

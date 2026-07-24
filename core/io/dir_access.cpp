@@ -56,14 +56,14 @@ String DirAccess::_get_root_path() const {
 }
 
 String DirAccess::_get_root_string() const {
-	switch (_access_type) {
-		case ACCESS_RESOURCES:
-			return "res://";
-		case ACCESS_USERDATA:
-			return "user://";
-		default:
-			return "";
+	if (
+		(_access_type < ACCESS_MAX) &
+		(_access_type >= ACCESS_RESOURCES)
+	)
+	{
+		return ACCESS_TYPE_ROOT_STRING[_access_type];
 	}
+	return "";
 }
 
 int DirAccess::get_current_drive() {

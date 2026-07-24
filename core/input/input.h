@@ -207,6 +207,14 @@ private:
 		POSITIVE_HALF_AXIS = 1
 	};
 
+	static constexpr float JOY_AXIS_RANGE_VALUE[POSITIVE_HALF_AXIS - NEGATIVE_HALF_AXIS + 1] = {
+		-1,
+		// It doesn't make sense for a button to map to a full axis,
+		// but keeping as a default for a trigger with a positive half-axis.
+		1,
+		1,
+	};
+
 	struct JoyEvent {
 		int type = TYPE_MAX;
 		int index = -1; ///< Can be either JoyAxis or JoyButton.

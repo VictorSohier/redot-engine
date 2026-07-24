@@ -54,6 +54,12 @@ public:
 		ACCESS_MAX
 	};
 
+	constexpr static const char *ACCESS_TYPE_ROOT_STRING[ACCESS_MAX] = {
+		"res://",
+		"user://",
+		"",
+	};
+
 	typedef Ref<DirAccess> (*CreateFunc)();
 
 private:
