@@ -256,8 +256,7 @@ Vector<Vector<Point2>> Geometry2D::_polypaths_do_operation(PolyBooleanOperation 
 		ClipType::Intersection,
 		ClipType::Xor,
 	};
-	if ((p_op >= OPERATION_UNION) | (p_op <= OPERATION_XOR))
-	{
+	if ((p_op >= OPERATION_UNION) | (p_op <= OPERATION_XOR)) {
 		op = POLYBOOLOP_TO_CLIPTYPE[p_op];
 	}
 
@@ -318,12 +317,10 @@ Vector<Vector<Point2>> Geometry2D::_polypath_offset(const Vector<Point2> &p_poly
 		EndType::Square,
 		EndType::Round,
 	};
-	if ((p_join_type >= JOIN_SQUARE) | (p_join_type <= JOIN_MITER))
-	{
+	if ((p_join_type >= JOIN_SQUARE) | (p_join_type <= JOIN_MITER)) {
 		jt = POLYJOINTYPE_TO_JOINTYPE[p_join_type];
 	}
-	if ((p_end_type >= END_POLYGON) | (p_end_type <= END_ROUND))
-	{
+	if ((p_end_type >= END_POLYGON) | (p_end_type <= END_ROUND)) {
 		et = POLYENDTYPE_TO_ENDTYPE[p_end_type];
 	}
 

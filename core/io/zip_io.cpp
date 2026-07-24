@@ -141,8 +141,7 @@ long zipio_seek(voidpf opaque, voidpf stream, uLong offset, int origin) {
 		(*fa)->get_length()
 	};
 	uint64_t pos = offset;
-	if ((origin >= ZLIB_FILEFUNC_SEEK_SET) & (origin <= ZLIB_FILEFUNC_SEEK_END))
-	{
+	if ((origin >= ZLIB_FILEFUNC_SEEK_SET) & (origin <= ZLIB_FILEFUNC_SEEK_END)) {
 		pos = (uint64_t)(bases[origin] + offset);
 	}
 

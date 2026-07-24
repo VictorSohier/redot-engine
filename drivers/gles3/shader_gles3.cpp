@@ -67,8 +67,7 @@ void ShaderGLES3::_add_stage(const char *p_code, StageType p_stage_type) {
 		StageTemplate::Chunk chunk;
 
 		if (l.begins_with("#GLOBALS")) {
-			if ((p_stage_type >= STAGE_TYPE_VERTEX) & (p_stage_type < STAGE_TYPE_MAX))
-			{
+			if ((p_stage_type >= STAGE_TYPE_VERTEX) & (p_stage_type < STAGE_TYPE_MAX)) {
 				chunk.type = STAGETYPE_TO_CHUNKTYPE[p_stage_type];
 			}
 

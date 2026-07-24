@@ -4226,15 +4226,14 @@ void AnimationTrackEditor::set_anim_pos(float p_pos) {
 
 static bool track_type_is_resettable(Animation::TrackType p_type) {
 	constexpr uint8_t TRACKTYPE_SET =
-		(1 << Animation::TYPE_VALUE) |
-		(1 << Animation::TYPE_BLEND_SHAPE) |
-		(1 << Animation::TYPE_BEZIER) |
-		(1 << Animation::TYPE_POSITION_3D) |
-		(1 << Animation::TYPE_ROTATION_3D) |
-		(1 << Animation::TYPE_SCALE_3D) |
-		0;
-	if (p_type <= Animation::TYPE_ANIMATION)
-	{
+			(1 << Animation::TYPE_VALUE) |
+			(1 << Animation::TYPE_BLEND_SHAPE) |
+			(1 << Animation::TYPE_BEZIER) |
+			(1 << Animation::TYPE_POSITION_3D) |
+			(1 << Animation::TYPE_ROTATION_3D) |
+			(1 << Animation::TYPE_SCALE_3D) |
+			0;
+	if (p_type <= Animation::TYPE_ANIMATION) {
 		return TRACKTYPE_SET & (1 << p_type);
 	}
 	return false;

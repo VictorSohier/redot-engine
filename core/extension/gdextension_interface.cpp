@@ -607,10 +607,8 @@ constexpr GDExtensionVariantFromTypeConstructorFunc VARIANT_FROM_TYPE[GDEXTENSIO
 // Variant interaction.
 static GDExtensionVariantFromTypeConstructorFunc gdextension_get_variant_from_type_constructor(GDExtensionVariantType p_type) {
 	if (
-		(p_type < GDEXTENSION_VARIANT_TYPE_VARIANT_MAX) &
-		(p_type > GDEXTENSION_VARIANT_TYPE_NIL)
-	)
-	{
+			(p_type < GDEXTENSION_VARIANT_TYPE_VARIANT_MAX) &
+			(p_type > GDEXTENSION_VARIANT_TYPE_NIL)) {
 		return VARIANT_FROM_TYPE[p_type];
 	}
 	ERR_FAIL_V_MSG(nullptr, "Getting Variant conversion function with invalid type");
@@ -660,10 +658,8 @@ constexpr GDExtensionTypeFromVariantConstructorFunc TYPE_FROM_VARIANT[GDEXTENSIO
 
 static GDExtensionTypeFromVariantConstructorFunc gdextension_get_variant_to_type_constructor(GDExtensionVariantType p_type) {
 	if (
-		(p_type < GDEXTENSION_VARIANT_TYPE_VARIANT_MAX) &
-		(p_type > GDEXTENSION_VARIANT_TYPE_NIL)
-	)
-	{
+			(p_type < GDEXTENSION_VARIANT_TYPE_VARIANT_MAX) &
+			(p_type > GDEXTENSION_VARIANT_TYPE_NIL)) {
 		return TYPE_FROM_VARIANT[p_type];
 	}
 	ERR_FAIL_V_MSG(nullptr, "Getting Variant conversion function with invalid type");
@@ -713,10 +709,8 @@ static GDExtensionVariantGetInternalPtrFunc INTERNAL_PTR_FUNC[GDEXTENSION_VARIAN
 
 static GDExtensionVariantGetInternalPtrFunc gdextension_variant_get_ptr_internal_getter(GDExtensionVariantType p_type) {
 	if (
-		(p_type < GDEXTENSION_VARIANT_TYPE_VARIANT_MAX) &
-		(p_type > GDEXTENSION_VARIANT_TYPE_NIL)
-	)
-	{
+			(p_type < GDEXTENSION_VARIANT_TYPE_VARIANT_MAX) &
+			(p_type > GDEXTENSION_VARIANT_TYPE_NIL)) {
 		return INTERNAL_PTR_FUNC[p_type];
 	}
 	ERR_FAIL_V_MSG(nullptr, "Getting Variant get internal pointer function with invalid type.");

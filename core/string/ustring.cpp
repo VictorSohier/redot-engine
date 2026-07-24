@@ -4513,10 +4513,14 @@ String String::humanize_size(uint64_t p_size) {
 	} else {
 		String suffix;
 		constexpr const char *suffixes[6] = {
-			"KiB", "MiB", "GiB", "TiB", "PiB", "EiB",
+			"KiB",
+			"MiB",
+			"GiB",
+			"TiB",
+			"PiB",
+			"EiB",
 		};
-		if ((magnitude > 0) & (magnitude < 7))
-		{
+		if ((magnitude > 0) & (magnitude < 7)) {
 			suffix = suffixes[magnitude - 1];
 		}
 

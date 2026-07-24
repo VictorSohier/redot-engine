@@ -154,10 +154,8 @@ void AccessibilityDriverAccessKit::_accessibility_action_callback(struct accessk
 							DisplayServer::SCROLL_HINT_RIGHT_EDGE,
 						};
 						if (
-							(p_request->data.value.scroll_hint >= ACCESSKIT_SCROLL_HINT_TOP_LEFT) &
-							(p_request->data.value.scroll_hint <= ACCESSKIT_SCROLL_HINT_RIGHT_EDGE)
-						)
-						{
+								(p_request->data.value.scroll_hint >= ACCESSKIT_SCROLL_HINT_TOP_LEFT) &
+								(p_request->data.value.scroll_hint <= ACCESSKIT_SCROLL_HINT_RIGHT_EDGE)) {
 							rq_data = ACCESSKIT_SCROLL_HINT_TO_SCROLL_HINT[p_request->data.value.scroll_hint];
 						}
 					} break;
@@ -928,10 +926,8 @@ void AccessibilityDriverAccessKit::accessibility_update_set_live(const RID &p_id
 		ACCESSKIT_LIVE_ASSERTIVE
 	};
 	if (
-		(p_live >= DisplayServer::AccessibilityLiveMode::LIVE_OFF) &
-		(p_live <= DisplayServer::AccessibilityLiveMode::LIVE_ASSERTIVE)
-	)
-	{
+			(p_live >= DisplayServer::AccessibilityLiveMode::LIVE_OFF) &
+			(p_live <= DisplayServer::AccessibilityLiveMode::LIVE_ASSERTIVE)) {
 		accesskit_node_set_live(ae->node, DSALM_TO_AK_LIVE[p_live]);
 	}
 }
@@ -1091,10 +1087,8 @@ void AccessibilityDriverAccessKit::accessibility_update_set_popup_type(const RID
 		ACCESSKIT_HAS_POPUP_DIALOG,
 	};
 	if (
-		(p_popup >= DisplayServer::AccessibilityPopupType::POPUP_MENU) &
-		(p_popup <= DisplayServer::AccessibilityPopupType::POPUP_DIALOG)
-	)
-	{
+			(p_popup >= DisplayServer::AccessibilityPopupType::POPUP_MENU) &
+			(p_popup <= DisplayServer::AccessibilityPopupType::POPUP_DIALOG)) {
 		accesskit_node_set_has_popup(ae->node, DSAPT_TO_AK_HAS_POPUP[p_popup]);
 	}
 }
@@ -1233,8 +1227,7 @@ void AccessibilityDriverAccessKit::accessibility_update_set_text_align(const RID
 		ACCESSKIT_TEXT_ALIGN_JUSTIFY,
 	};
 
-	if ((p_align >= HORIZONTAL_ALIGNMENT_LEFT) & (p_align <= HORIZONTAL_ALIGNMENT_FILL))
-	{
+	if ((p_align >= HORIZONTAL_ALIGNMENT_LEFT) & (p_align <= HORIZONTAL_ALIGNMENT_FILL)) {
 		accesskit_node_set_text_align(ae->node, TEXT_ALIGN[p_align]);
 	}
 }

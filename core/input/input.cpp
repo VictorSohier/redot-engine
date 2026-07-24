@@ -1494,10 +1494,8 @@ Input::JoyEvent Input::_get_mapped_button_event(const JoyDeviceMapping &mapping,
 				case TYPE_AXIS:
 					event.index = (int)binding.output.axis.axis;
 					if (
-						(binding.output.axis.range >= NEGATIVE_HALF_AXIS) &
-						(binding.output.axis.range <= POSITIVE_HALF_AXIS)
-					)
-					{
+							(binding.output.axis.range >= NEGATIVE_HALF_AXIS) &
+							(binding.output.axis.range <= POSITIVE_HALF_AXIS)) {
 						event.value = JOY_AXIS_RANGE_VALUE[binding.output.axis.range - NEGATIVE_HALF_AXIS];
 					}
 					return event;

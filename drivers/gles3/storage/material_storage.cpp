@@ -547,8 +547,7 @@ _FORCE_INLINE_ static void _fill_std140_ubo_empty(ShaderLanguage::DataType type,
 		// 0, // TYPE_SAMPLEREXT
 		// 0, // TYPE_STRUCT
 	};
-	if ((type > ShaderLanguage::TYPE_VOID) & ((type < ShaderLanguage::TYPE_SAMPLER2D)))
-	{
+	if ((type > ShaderLanguage::TYPE_VOID) & ((type < ShaderLanguage::TYPE_SAMPLER2D))) {
 		memset(data, 0, SIZE_CONSTANT[type] * p_array_size);
 	}
 }

@@ -217,8 +217,7 @@ constexpr int FORMAT_PIXEL_SIZE[Image::FORMAT_MAX] = {
 
 int Image::get_format_pixel_size(Format p_format) {
 	int ret = 0;
-	if (((uint32_t)p_format) < FORMAT_MAX)
-	{
+	if (((uint32_t)p_format) < FORMAT_MAX) {
 		ret = FORMAT_PIXEL_SIZE[p_format];
 	}
 	return ret;
@@ -266,11 +265,9 @@ constexpr int FORMAT_PIXEL_SIZE_RECT[Image::FORMAT_MAX] = {
 	8, // FORMAT_ASTC_8x8_HDR
 };
 
-
 void Image::get_format_min_pixel_size(Format p_format, int &r_w, int &r_h) {
 	int size = {};
-	if (((uint32_t)p_format) < FORMAT_MAX)
-	{
+	if (((uint32_t)p_format) < FORMAT_MAX) {
 		size = FORMAT_PIXEL_SIZE_RECT[p_format];
 	}
 	r_w = size;
@@ -289,8 +286,7 @@ int Image::get_format_pixel_rshift(Format p_format) {
 
 int Image::get_format_block_size(Format p_format) {
 	int ret = 1;
-	if (((uint32_t)p_format) < FORMAT_MAX)
-	{
+	if (((uint32_t)p_format) < FORMAT_MAX) {
 		ret = FORMAT_PIXEL_SIZE_RECT[p_format];
 	}
 	return ret;
@@ -415,8 +411,7 @@ constexpr const char *IMAGE_VALIDATION_ERROR_TEXT[Image::VALIDATE_3D_ERR_IMAGE_H
 
 String Image::get_3d_image_validation_error_text(Image3DValidateError p_error) {
 	String ret = "";
-	if (((unsigned int)p_error) <= VALIDATE_3D_ERR_IMAGE_HAS_MIPMAPS)
-	{
+	if (((unsigned int)p_error) <= VALIDATE_3D_ERR_IMAGE_HAS_MIPMAPS) {
 		ret = IMAGE_VALIDATION_ERROR_TEXT[p_error];
 	}
 	return ret;
@@ -516,47 +511,39 @@ void Image::convert(Format p_new_format) {
 		const uint8_t *rptr = data.ptr() + mip_offset;
 		uint8_t *wptr = new_img.data.ptrw() + new_img.get_mipmap_offset(mip);
 		IO::Reader::make(
-			&reader,
-			{
-				.data = (void*)rptr,
-				.length = (size_t)mip_size,
-			}
-		);
+				&reader,
+				{
+						.data = (void *)rptr,
+						.length = (size_t)mip_size,
+				});
 		err = IO::Image::Reader::make(
-			&imReader,
-			reader,
-			format,
-			mip_width,
-			mip_height
-		);
-		if (err != IO::Error::Okay)
-		{
+				&imReader,
+				reader,
+				format,
+				mip_width,
+				mip_height);
+		if (err != IO::Error::Okay) {
 			break;
 		}
 		new_img.get_mipmap_offset_and_size(mip, mip_offset, mip_size);
 		err = IO::Writer::make(
-			&writer,
-			{
-				.data = (void*)wptr,
-				.length = (size_t)(mip_size),
-			}
-		);
-		if (err != IO::Error::Okay)
-		{
+				&writer,
+				{
+						.data = (void *)wptr,
+						.length = (size_t)(mip_size),
+				});
+		if (err != IO::Error::Okay) {
 			break;
 		}
 		IO::Image::Writer::make(
-			&imWriter,
-			writer,
-			new_img.format,
-			mip_width,
-			mip_height
-		);
-		do
-		{
+				&imWriter,
+				writer,
+				new_img.format,
+				mip_width,
+				mip_height);
+		do {
 			err = IO::Image::Reader::read(imReader, &block);
-			if (err == IO::Error::Okay)
-			{
+			if (err == IO::Error::Okay) {
 				err = IO::Image::Writer::write(imWriter, &block);
 			}
 		} while (err == IO::Error::Okay);
@@ -565,7 +552,9 @@ void Image::convert(Format p_new_format) {
 		IO::Image::Writer::destroy(&imWriter);
 		IO::Reader::destroy(&reader);
 		IO::Writer::destroy(&writer);
-		if (err != IO::Error::Okay) { return; }
+		if (err != IO::Error::Okay) {
+			return;
+		}
 	}
 
 	_copy_internals_from(new_img);
@@ -773,10 +762,9 @@ static void _scale_nearest(const uint8_t *__restrict p_src, uint8_t *__restrict 
 
 			for (uint32_t l = 0; l < cc; l++) {
 				memcpy(
-					((uint8_t*)p_dst) + ((i * p_dst_width * cc + j * cc + l) * elSize),
-					((uint8_t*)p_src) + ((y_ofs + src_xofs + l) * elSize),
-					elSize
-				);
+						((uint8_t *)p_dst) + ((i * p_dst_width * cc + j * cc + l) * elSize),
+						((uint8_t *)p_src) + ((y_ofs + src_xofs + l) * elSize),
+						elSize);
 			}
 		}
 	}
@@ -987,20 +975,17 @@ void Image::resize(int p_width, int p_height, Interpolation p_interpolation) {
 	switch (p_interpolation) {
 		case INTERPOLATE_NEAREST: {
 			if (
-				((format >= FORMAT_L8) & (format <= FORMAT_RGBA8)) |
-				((format >= FORMAT_RF) & (format <= FORMAT_RGBAH))
-			)
-			{
+					((format >= FORMAT_L8) & (format <= FORMAT_RGBA8)) |
+					((format >= FORMAT_RF) & (format <= FORMAT_RGBAH))) {
 				_scale_nearest(
-					r_ptr,
-					w_ptr,
-					width,
-					height,
-					p_width,
-					p_height,
-					get_format_pixel_size(format),
-					get_format_pixel_size(format) / COMPONENT_COUNT[format]
-				);
+						r_ptr,
+						w_ptr,
+						width,
+						height,
+						p_width,
+						p_height,
+						get_format_pixel_size(format),
+						get_format_pixel_size(format) / COMPONENT_COUNT[format]);
 			}
 		} break;
 		case INTERPOLATE_BILINEAR:
@@ -1037,30 +1022,29 @@ void Image::resize(int p_width, int p_height, Interpolation p_interpolation) {
 					}
 				}
 
-				switch (format)
-				{
-				case FORMAT_L8:
-				case FORMAT_LA8:
-				case FORMAT_R8:
-				case FORMAT_RG8:
-				case FORMAT_RGB8:
-				case FORMAT_RGBA8:
-					_scale_bilinear<uint8_t>(r_ptr, w_ptr, width, height, p_width, p_height, get_format_pixel_size(format));
-					break;
-				case FORMAT_RF:
-				case FORMAT_RGF:
-				case FORMAT_RGBF:
-				case FORMAT_RGBAF:
-					_scale_bilinear<float>(r_ptr, w_ptr, width, height, p_width, p_height, get_format_pixel_size(format) >> 2);
-					break;
-				case FORMAT_RH:
-				case FORMAT_RGH:
-				case FORMAT_RGBH:
-				case FORMAT_RGBAH:
-					_scale_bilinear<uint16_t>(r_ptr, w_ptr, width, height, p_width, p_height, get_format_pixel_size(format) >> 1);
-					break;
-				default:
-					break;
+				switch (format) {
+					case FORMAT_L8:
+					case FORMAT_LA8:
+					case FORMAT_R8:
+					case FORMAT_RG8:
+					case FORMAT_RGB8:
+					case FORMAT_RGBA8:
+						_scale_bilinear<uint8_t>(r_ptr, w_ptr, width, height, p_width, p_height, get_format_pixel_size(format));
+						break;
+					case FORMAT_RF:
+					case FORMAT_RGF:
+					case FORMAT_RGBF:
+					case FORMAT_RGBAF:
+						_scale_bilinear<float>(r_ptr, w_ptr, width, height, p_width, p_height, get_format_pixel_size(format) >> 2);
+						break;
+					case FORMAT_RH:
+					case FORMAT_RGH:
+					case FORMAT_RGBH:
+					case FORMAT_RGBAH:
+						_scale_bilinear<uint16_t>(r_ptr, w_ptr, width, height, p_width, p_height, get_format_pixel_size(format) >> 1);
+						break;
+					default:
+						break;
 				}
 			}
 
@@ -1072,57 +1056,55 @@ void Image::resize(int p_width, int p_height, Interpolation p_interpolation) {
 
 		} break;
 		case INTERPOLATE_CUBIC: {
-			switch (format)
-			{
-			case FORMAT_L8:
-			case FORMAT_LA8:
-			case FORMAT_R8:
-			case FORMAT_RG8:
-			case FORMAT_RGB8:
-			case FORMAT_RGBA8:
-				_scale_cubic<uint8_t>(r_ptr, w_ptr, width, height, p_width, p_height, get_format_pixel_size(format));
-				break;
-			case FORMAT_RF:
-			case FORMAT_RGF:
-			case FORMAT_RGBF:
-			case FORMAT_RGBAF:
-				_scale_cubic<float>(r_ptr, w_ptr, width, height, p_width, p_height, get_format_pixel_size(format) >> 2);
-				break;
-			case FORMAT_RH:
-			case FORMAT_RGH:
-			case FORMAT_RGBH:
-			case FORMAT_RGBAH:
-				_scale_cubic<uint16_t>(r_ptr, w_ptr, width, height, p_width, p_height, get_format_pixel_size(format) >> 1);
-				break;
-			default:
-				break;
+			switch (format) {
+				case FORMAT_L8:
+				case FORMAT_LA8:
+				case FORMAT_R8:
+				case FORMAT_RG8:
+				case FORMAT_RGB8:
+				case FORMAT_RGBA8:
+					_scale_cubic<uint8_t>(r_ptr, w_ptr, width, height, p_width, p_height, get_format_pixel_size(format));
+					break;
+				case FORMAT_RF:
+				case FORMAT_RGF:
+				case FORMAT_RGBF:
+				case FORMAT_RGBAF:
+					_scale_cubic<float>(r_ptr, w_ptr, width, height, p_width, p_height, get_format_pixel_size(format) >> 2);
+					break;
+				case FORMAT_RH:
+				case FORMAT_RGH:
+				case FORMAT_RGBH:
+				case FORMAT_RGBAH:
+					_scale_cubic<uint16_t>(r_ptr, w_ptr, width, height, p_width, p_height, get_format_pixel_size(format) >> 1);
+					break;
+				default:
+					break;
 			}
 		} break;
 		case INTERPOLATE_LANCZOS: {
-			switch (format)
-			{
-			case FORMAT_L8:
-			case FORMAT_LA8:
-			case FORMAT_R8:
-			case FORMAT_RG8:
-			case FORMAT_RGB8:
-			case FORMAT_RGBA8:
-				_scale_lanczos<uint8_t>(r_ptr, w_ptr, width, height, p_width, p_height, get_format_pixel_size(format));
-				break;
-			case FORMAT_RF:
-			case FORMAT_RGF:
-			case FORMAT_RGBF:
-			case FORMAT_RGBAF:
-				_scale_lanczos<float>(r_ptr, w_ptr, width, height, p_width, p_height, get_format_pixel_size(format) >> 2);
-				break;
-			case FORMAT_RH:
-			case FORMAT_RGH:
-			case FORMAT_RGBH:
-			case FORMAT_RGBAH:
-				_scale_lanczos<uint16_t>(r_ptr, w_ptr, width, height, p_width, p_height, get_format_pixel_size(format) >> 1);
-				break;
-			default:
-				break;
+			switch (format) {
+				case FORMAT_L8:
+				case FORMAT_LA8:
+				case FORMAT_R8:
+				case FORMAT_RG8:
+				case FORMAT_RGB8:
+				case FORMAT_RGBA8:
+					_scale_lanczos<uint8_t>(r_ptr, w_ptr, width, height, p_width, p_height, get_format_pixel_size(format));
+					break;
+				case FORMAT_RF:
+				case FORMAT_RGF:
+				case FORMAT_RGBF:
+				case FORMAT_RGBAF:
+					_scale_lanczos<float>(r_ptr, w_ptr, width, height, p_width, p_height, get_format_pixel_size(format) >> 2);
+					break;
+				case FORMAT_RH:
+				case FORMAT_RGH:
+				case FORMAT_RGBH:
+				case FORMAT_RGBAH:
+					_scale_lanczos<uint16_t>(r_ptr, w_ptr, width, height, p_width, p_height, get_format_pixel_size(format) >> 1);
+					break;
+				default:
+					break;
 			}
 		} break;
 	}
@@ -3213,10 +3195,8 @@ constexpr Image::Format USED_CHANNELS_TO_FORMAT[Image::USED_CHANNELS_RGBA + 1] =
 
 void Image::optimize_channels() {
 	if (
-		(detect_used_channels() >= USED_CHANNELS_L) &
-		(detect_used_channels() <= USED_CHANNELS_RGBA)
-	)
-	{
+			(detect_used_channels() >= USED_CHANNELS_L) &
+			(detect_used_channels() <= USED_CHANNELS_RGBA)) {
 		convert(USED_CHANNELS_TO_FORMAT[detect_used_channels()]);
 	}
 }
@@ -3697,8 +3677,7 @@ String Image::get_format_name(Format p_format) {
 }
 
 uint32_t Image::get_format_component_mask(Format p_format) {
-	if ((p_format >= Image::FORMAT_L8) & (p_format < Image::FORMAT_MAX))
-	{
+	if ((p_format >= Image::FORMAT_L8) & (p_format < Image::FORMAT_MAX)) {
 		return (1 << COMPONENT_COUNT[p_format]) - 1;
 	}
 	return (1 << 4) - 1;

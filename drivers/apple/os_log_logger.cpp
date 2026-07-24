@@ -86,8 +86,7 @@ void OsLogLogger::log_error(const char *p_function, const char *p_file, int p_li
 		error_log
 	};
 	os_log_t selected_log = error_log;
-	if ((p_type >= ERR_ERROR) & (p_type <= ERR_SHADER))
-	{
+	if ((p_type >= ERR_ERROR) & (p_type <= ERR_SHADER)) {
 		selected_log = LOGTYPE_TO_OSLOG0[p_type];
 	}
 	const char *err_details;
@@ -99,8 +98,7 @@ void OsLogLogger::log_error(const char *p_function, const char *p_file, int p_li
 
 	// Choose log level based on error type.
 	os_log_type_t log_type = OS_LOG_TYPE_ERROR;
-	if (p_type == ERR_WARNING)
-	{
+	if (p_type == ERR_WARNING) {
 		log_type = OS_LOG_TYPE_DEFAULT;
 	}
 

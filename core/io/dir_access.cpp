@@ -57,10 +57,8 @@ String DirAccess::_get_root_path() const {
 
 String DirAccess::_get_root_string() const {
 	if (
-		(_access_type < ACCESS_MAX) &
-		(_access_type >= ACCESS_RESOURCES)
-	)
-	{
+			(_access_type < ACCESS_MAX) &
+			(_access_type >= ACCESS_RESOURCES)) {
 		return ACCESS_TYPE_ROOT_STRING[_access_type];
 	}
 	return "";

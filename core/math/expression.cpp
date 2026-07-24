@@ -1000,8 +1000,7 @@ Expression::ENode *Expression::_parse_expression() {
 			Variant::OP_BIT_XOR, // TK_OP_BIT_XOR
 			Variant::OP_BIT_NEGATE, // TK_OP_BIT_INVERT
 		};
-		if ((tk.type >= TK_OP_IN) & (tk.type < TK_INPUT))
-		{
+		if ((tk.type >= TK_OP_IN) & (tk.type < TK_INPUT)) {
 			op = OPS[tk.type - TK_OP_IN];
 		}
 
@@ -1026,10 +1025,10 @@ Expression::ENode *Expression::_parse_expression() {
 		int min_priority = 0xFFFFF;
 		bool is_unary = false;
 		constexpr uint32_t UNARY_OPS =
-			(1 << Variant::OP_BIT_NEGATE) |
-			(1 << Variant::OP_NEGATE) |
-			(1 << Variant::OP_NOT) |
-			0;
+				(1 << Variant::OP_BIT_NEGATE) |
+				(1 << Variant::OP_NEGATE) |
+				(1 << Variant::OP_NOT) |
+				0;
 		constexpr int OP_PRIORITY[Variant::OP_MAX] = {
 			9, // OP_EQUAL
 			9, // OP_NOT_EQUAL
@@ -1064,10 +1063,8 @@ Expression::ENode *Expression::_parse_expression() {
 			}
 
 			if (
-				(expression_nodes[i].op >= Variant::OP_MAX) |
-				(expression_nodes[i].op < Variant::OP_EQUAL)
-			)
-			{
+					(expression_nodes[i].op >= Variant::OP_MAX) |
+					(expression_nodes[i].op < Variant::OP_EQUAL)) {
 				_set_error("Parser bug, invalid operator in expression: " + itos(expression_nodes[i].op));
 				return nullptr;
 			}

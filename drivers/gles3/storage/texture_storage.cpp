@@ -513,8 +513,7 @@ Ref<Image> TextureStorage::_get_gl_image_and_format(const Ref<Image> &p_image, I
 	bool need_decompress = false;
 	bool decompress_ra_to_rg = false;
 
-	struct TXInfoRecord
-	{
+	struct TXInfoRecord {
 		GLenum internalFormat;
 		GLenum format;
 		GLenum type;
@@ -522,143 +521,164 @@ Ref<Image> TextureStorage::_get_gl_image_and_format(const Ref<Image> &p_image, I
 		bool decompressRAtoRG;
 	};
 	TXInfoRecord TX_INFO[Image::FORMAT_MAX - Image::FORMAT_DXT1] = {
-		{ // Image::FORMAT_DXT1
-			.internalFormat = _EXT_COMPRESSED_RGBA_S3TC_DXT1_EXT,
-			.format = GL_RGBA,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->s3tc_supported,
+		{
+				// Image::FORMAT_DXT1
+				.internalFormat = _EXT_COMPRESSED_RGBA_S3TC_DXT1_EXT,
+				.format = GL_RGBA,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->s3tc_supported,
 		},
-		{ // Image::FORMAT_DXT3
-			.internalFormat = _EXT_COMPRESSED_RGBA_S3TC_DXT3_EXT,
-			.format = GL_RGBA,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->s3tc_supported,
+		{
+				// Image::FORMAT_DXT3
+				.internalFormat = _EXT_COMPRESSED_RGBA_S3TC_DXT3_EXT,
+				.format = GL_RGBA,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->s3tc_supported,
 		},
-		{ // Image::FORMAT_DXT5
-			.internalFormat = _EXT_COMPRESSED_RGBA_S3TC_DXT5_EXT,
-			.format = GL_RGBA,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->s3tc_supported,
+		{
+				// Image::FORMAT_DXT5
+				.internalFormat = _EXT_COMPRESSED_RGBA_S3TC_DXT5_EXT,
+				.format = GL_RGBA,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->s3tc_supported,
 		},
-		{ // Image::FORMAT_RGTC_R
-			.internalFormat = _EXT_COMPRESSED_RED_RGTC1_EXT,
-			.format = GL_RGBA,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->rgtc_supported,
+		{
+				// Image::FORMAT_RGTC_R
+				.internalFormat = _EXT_COMPRESSED_RED_RGTC1_EXT,
+				.format = GL_RGBA,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->rgtc_supported,
 		},
-		{ // Image::FORMAT_RGTC_RG
-			.internalFormat = _EXT_COMPRESSED_RED_GREEN_RGTC2_EXT,
-			.format = GL_RGBA,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->rgtc_supported,
+		{
+				// Image::FORMAT_RGTC_RG
+				.internalFormat = _EXT_COMPRESSED_RED_GREEN_RGTC2_EXT,
+				.format = GL_RGBA,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->rgtc_supported,
 		},
-		{ // Image::FORMAT_BPTC_RGBA
-			.internalFormat = _EXT_COMPRESSED_RGBA_BPTC_UNORM,
-			.format = GL_RGBA,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->bptc_supported,
+		{
+				// Image::FORMAT_BPTC_RGBA
+				.internalFormat = _EXT_COMPRESSED_RGBA_BPTC_UNORM,
+				.format = GL_RGBA,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->bptc_supported,
 		},
-		{ // Image::FORMAT_BPTC_RGBF
-			.internalFormat = _EXT_COMPRESSED_RGB_BPTC_SIGNED_FLOAT,
-			.format = GL_RGB,
-			.type = GL_FLOAT,
-			.supported = config->bptc_supported,
+		{
+				// Image::FORMAT_BPTC_RGBF
+				.internalFormat = _EXT_COMPRESSED_RGB_BPTC_SIGNED_FLOAT,
+				.format = GL_RGB,
+				.type = GL_FLOAT,
+				.supported = config->bptc_supported,
 		},
-		{ // Image::FORMAT_BPTC_RGBFU
-			.internalFormat = _EXT_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT,
-			.format = GL_RGB,
-			.type = GL_FLOAT,
-			.supported = config->bptc_supported,
+		{
+				// Image::FORMAT_BPTC_RGBFU
+				.internalFormat = _EXT_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT,
+				.format = GL_RGB,
+				.type = GL_FLOAT,
+				.supported = config->bptc_supported,
 		},
-		{ // Image::FORMAT_ETC
-			.internalFormat = _EXT_COMPRESSED_RGB8_ETC2,
-			.format = GL_RGB,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->etc2_supported,
+		{
+				// Image::FORMAT_ETC
+				.internalFormat = _EXT_COMPRESSED_RGB8_ETC2,
+				.format = GL_RGB,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->etc2_supported,
 		},
-		{ // Image::FORMAT_ETC2_R11
-			.internalFormat = _EXT_COMPRESSED_R11_EAC,
-			.format = GL_RED,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->etc2_supported,
+		{
+				// Image::FORMAT_ETC2_R11
+				.internalFormat = _EXT_COMPRESSED_R11_EAC,
+				.format = GL_RED,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->etc2_supported,
 		},
-		{ // Image::FORMAT_ETC2_R11S
-			.internalFormat = _EXT_COMPRESSED_SIGNED_R11_EAC,
-			.format = GL_RED,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->etc2_supported,
+		{
+				// Image::FORMAT_ETC2_R11S
+				.internalFormat = _EXT_COMPRESSED_SIGNED_R11_EAC,
+				.format = GL_RED,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->etc2_supported,
 		},
-		{ // Image::FORMAT_ETC2_RG11
-			.internalFormat = _EXT_COMPRESSED_RG11_EAC,
-			.format = GL_RG,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->etc2_supported,
+		{
+				// Image::FORMAT_ETC2_RG11
+				.internalFormat = _EXT_COMPRESSED_RG11_EAC,
+				.format = GL_RG,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->etc2_supported,
 		},
-		{ // Image::FORMAT_ETC2_RG11S
-			.internalFormat = _EXT_COMPRESSED_SIGNED_RG11_EAC,
-			.format = GL_RG,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->etc2_supported,
+		{
+				// Image::FORMAT_ETC2_RG11S
+				.internalFormat = _EXT_COMPRESSED_SIGNED_RG11_EAC,
+				.format = GL_RG,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->etc2_supported,
 		},
-		{ // Image::FORMAT_ETC2_RGB8
-			.internalFormat = _EXT_COMPRESSED_RGB8_ETC2,
-			.format = GL_RGB,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->etc2_supported,
+		{
+				// Image::FORMAT_ETC2_RGB8
+				.internalFormat = _EXT_COMPRESSED_RGB8_ETC2,
+				.format = GL_RGB,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->etc2_supported,
 		},
-		{ // Image::FORMAT_ETC2_RGBA8
-			.internalFormat = _EXT_COMPRESSED_RGBA8_ETC2_EAC,
-			.format = GL_RGBA,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->etc2_supported,
+		{
+				// Image::FORMAT_ETC2_RGBA8
+				.internalFormat = _EXT_COMPRESSED_RGBA8_ETC2_EAC,
+				.format = GL_RGBA,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->etc2_supported,
 		},
-		{ // Image::FORMAT_ETC2_RGB8A1
-			.internalFormat = _EXT_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2,
-			.format = GL_RGBA,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->etc2_supported,
+		{
+				// Image::FORMAT_ETC2_RGB8A1
+				.internalFormat = _EXT_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2,
+				.format = GL_RGBA,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->etc2_supported,
 		},
-		{ // Image::FORMAT_ETC2_RA_AS_RG
-			.internalFormat = _EXT_COMPRESSED_RGBA8_ETC2_EAC,
-			.format = GL_RGBA,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->etc2_supported,
-			.decompressRAtoRG = true,
+		{
+				// Image::FORMAT_ETC2_RA_AS_RG
+				.internalFormat = _EXT_COMPRESSED_RGBA8_ETC2_EAC,
+				.format = GL_RGBA,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->etc2_supported,
+				.decompressRAtoRG = true,
 		},
-		{ // Image::FORMAT_DXT5_RA_AS_RG
-			.internalFormat = _EXT_COMPRESSED_RGBA_S3TC_DXT5_EXT,
-			.format = GL_RGBA,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->s3tc_supported,
-			.decompressRAtoRG = true,
+		{
+				// Image::FORMAT_DXT5_RA_AS_RG
+				.internalFormat = _EXT_COMPRESSED_RGBA_S3TC_DXT5_EXT,
+				.format = GL_RGBA,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->s3tc_supported,
+				.decompressRAtoRG = true,
 		},
-		{ // Image::FORMAT_ASTC_4x4
-			.internalFormat = _EXT_COMPRESSED_RGBA_ASTC_4x4_KHR,
-			.format = GL_RGBA,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->astc_supported,
+		{
+				// Image::FORMAT_ASTC_4x4
+				.internalFormat = _EXT_COMPRESSED_RGBA_ASTC_4x4_KHR,
+				.format = GL_RGBA,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->astc_supported,
 		},
-		{ // Image::FORMAT_ASTC_4x4_HDR
-			.internalFormat = _EXT_COMPRESSED_RGBA_ASTC_4x4_KHR,
-			.format = GL_RGBA,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->astc_hdr_supported,
+		{
+				// Image::FORMAT_ASTC_4x4_HDR
+				.internalFormat = _EXT_COMPRESSED_RGBA_ASTC_4x4_KHR,
+				.format = GL_RGBA,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->astc_hdr_supported,
 		},
-		{ // Image::FORMAT_ASTC_8x8
-			.internalFormat = _EXT_COMPRESSED_RGBA_ASTC_8x8_KHR,
-			.format = GL_RGBA,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->astc_supported,
+		{
+				// Image::FORMAT_ASTC_8x8
+				.internalFormat = _EXT_COMPRESSED_RGBA_ASTC_8x8_KHR,
+				.format = GL_RGBA,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->astc_supported,
 		},
-		{ // Image::FORMAT_ASTC_8x8_HDR
-			.internalFormat = _EXT_COMPRESSED_RGBA_ASTC_8x8_KHR,
-			.format = GL_RGBA,
-			.type = GL_UNSIGNED_BYTE,
-			.supported = config->astc_hdr_supported,
+		{
+				// Image::FORMAT_ASTC_8x8_HDR
+				.internalFormat = _EXT_COMPRESSED_RGBA_ASTC_8x8_KHR,
+				.format = GL_RGBA,
+				.type = GL_UNSIGNED_BYTE,
+				.supported = config->astc_hdr_supported,
 		},
 	};
-	if ((p_format >= Image::FORMAT_DXT1) & (p_format < Image::FORMAT_MAX))
-	{
+	if ((p_format >= Image::FORMAT_DXT1) & (p_format < Image::FORMAT_MAX)) {
 		if (TX_INFO[p_format - Image::FORMAT_DXT1].supported) {
 			r_gl_internal_format = TX_INFO[p_format - Image::FORMAT_DXT1].internalFormat;
 			r_gl_format = TX_INFO[p_format - Image::FORMAT_DXT1].format;
@@ -910,21 +930,27 @@ RID TextureStorage::texture_create_from_native_handle(RS::TextureType p_type, Im
 	texture.active = true;
 	texture.is_from_native_handle = true;
 
-	struct TextureTypeInfo
-	{
+	struct TextureTypeInfo {
 		Texture::Type type;
 		GLenum target;
 	};
 	constexpr TextureTypeInfo TX_TYPEINFO[RS::TEXTURE_TYPE_3D + 1] = {
-		{ .type = Texture::TYPE_2D, .target = GL_TEXTURE_2D, },
-		{ .type = Texture::TYPE_LAYERED, .target = GL_TEXTURE_2D_ARRAY, },
-		{ .type = Texture::TYPE_3D, .target = GL_TEXTURE_3D, },
+		{
+				.type = Texture::TYPE_2D,
+				.target = GL_TEXTURE_2D,
+		},
+		{
+				.type = Texture::TYPE_LAYERED,
+				.target = GL_TEXTURE_2D_ARRAY,
+		},
+		{
+				.type = Texture::TYPE_3D,
+				.target = GL_TEXTURE_3D,
+		},
 	};
 	if (
-		(p_type >= RS::TEXTURE_TYPE_2D) &
-		(p_type <= RS::TEXTURE_TYPE_3D)
-	)
-	{
+			(p_type >= RS::TEXTURE_TYPE_2D) &
+			(p_type <= RS::TEXTURE_TYPE_3D)) {
 		texture.type = TX_TYPEINFO[p_type].type;
 		texture.target = TX_TYPEINFO[p_type].target;
 	}
@@ -2875,14 +2901,10 @@ Rect2i TextureStorage::_render_target_get_sdf_rect(const RenderTarget *rt) const
 		200,
 	};
 	if (
-		(rt->sdf_oversize >= RS::VIEWPORT_SDF_OVERSIZE_100_PERCENT) &
-		(rt->sdf_oversize < RS::VIEWPORT_SDF_OVERSIZE_MAX)
-	)
-	{
+			(rt->sdf_oversize >= RS::VIEWPORT_SDF_OVERSIZE_100_PERCENT) &
+			(rt->sdf_oversize < RS::VIEWPORT_SDF_OVERSIZE_MAX)) {
 		scale = SCALE[rt->sdf_oversize];
-	}
-	else
-	{
+	} else {
 		ERR_PRINT("Invalid viewport SDF oversize, defaulting to 100%.");
 	}
 
@@ -2951,14 +2973,10 @@ void TextureStorage::_render_target_allocate_sdf(RenderTarget *rt) {
 	int scale = 100;
 	constexpr int SCALE[RS::VIEWPORT_SDF_SCALE_MAX] = { 100, 50, 25 };
 	if (
-		(rt->sdf_scale >= RS::VIEWPORT_SDF_SCALE_100_PERCENT) &
-		(rt->sdf_scale < RS::VIEWPORT_SDF_SCALE_MAX)
-	)
-	{
+			(rt->sdf_scale >= RS::VIEWPORT_SDF_SCALE_100_PERCENT) &
+			(rt->sdf_scale < RS::VIEWPORT_SDF_SCALE_MAX)) {
 		scale = SCALE[rt->sdf_scale];
-	}
-	else
-	{
+	} else {
 		ERR_PRINT("Invalid viewport SDF scale, defaulting to 100%.");
 	}
 
@@ -3039,15 +3057,13 @@ void TextureStorage::render_target_sdf_process(RID p_render_target) {
 	bool shrink = false;
 
 	if (
-		(rt->sdf_scale >= RS::VIEWPORT_SDF_SCALE_100_PERCENT) &
-		(rt->sdf_scale < RS::VIEWPORT_SDF_SCALE_MAX)
-	)
-	{
+			(rt->sdf_scale >= RS::VIEWPORT_SDF_SCALE_100_PERCENT) &
+			(rt->sdf_scale < RS::VIEWPORT_SDF_SCALE_MAX)) {
 		size[0] >>= rt->sdf_scale;
 		size[1] >>= rt->sdf_scale;
 		shift = rt->sdf_scale;
 		shrink = (rt->sdf_scale > RS::VIEWPORT_SDF_SCALE_100_PERCENT) &
-			(rt->sdf_scale < RS::VIEWPORT_SDF_SCALE_MAX);
+				(rt->sdf_scale < RS::VIEWPORT_SDF_SCALE_MAX);
 	}
 
 	GLuint temp_fb;
